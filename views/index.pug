@@ -2,3 +2,9 @@ extends ./base.pug
 
 block content
     h1 BJR C CHIEN
+    ul
+        each room in rooms
+            li
+                a(href='r/' + room.UUID)= room.UUID
+                | , Up since 
+                span.time(x-attr-since=room.startedAt)
