@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T10:51:29+02:00
+* @Last modified time: 2016-04-16T11:33:25+02:00
 */
 
 'use strict';
@@ -42,7 +42,7 @@ app.get('/r/:ruuid', function(req, res) {
     logger.debug(`Trying to access room ${roomUUID}`);
 
     // Check if room exists
-    if (roomManager.exist(roomUUID)) {
+    if (roomManager.exists(roomUUID)) {
         res.render('room', { room : roomManager.get(roomUUID) });
     } else {
         logger.error(`Room ${roomUUID} does not exist`);
@@ -61,7 +61,27 @@ app.listen(3000, function() {
     server.listen(3001);
     logger.info('Listening on socket 0.0.0.0:3001...');
     let io = require('socket.io')(server);
-    io.on('connection', function() {
-        logger.debug('LOL')
+
+    io.on('connection', function(sock) {
+        logger.debug('New socket connection')
+
+        sock.on('register', function(data) {
+            if (roomManager.exists(data.roomUUID)) {
+                let room = roomManager.get(data.roomUUID),
+                    member;
+
+                if (data.memberUUID != null) {
+                    logger.debug(`Ask register for ${data.memberUUID}@${data.roomUUID}`);
+
+                    member = room.members.get(data.memberUUID) || room.registerMember();
+                } else {
+                    logger.debug(`Ask register for ${data.roomUUID}`);
+
+                    member = room.registerMember();
+                }
+
+                sock.emit('registered', { me: member, room: [] });
+            }
+        });
     });
 });
