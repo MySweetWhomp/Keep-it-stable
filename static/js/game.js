@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T16:33:59+02:00
+* @Last modified time: 2016-04-16T17:45:47+02:00
 */
 
 window.addEventListener('load', function() {
@@ -30,6 +30,7 @@ window.addEventListener('load', function() {
             return map.querySelectorAll('.square')[(y * room.size[0]) + x];
         },
         getAdjacentMembers: function(member) {
+            member = member || me;
             var positives = [],
                 refX = member.pos.x,
                 refY = member.pos.y;
@@ -45,9 +46,34 @@ window.addEventListener('load', function() {
             return positives;
         },
         getAsset: function(member) {
-            return '/static/assets/' + member.type + '.png';
+            return '/static/assets/' + member.type.name + '.png';
         }
     };
+
+    var computeScore = [
+        function(input) {
+            var total = 8;
+            if (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1){
+                total -= (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) ? 5 : 3;
+            } else if (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) {
+                total -= (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1) ? 5 : 3;
+            }
+            return input.length >= (total / 2) ? -1 : 1;
+        },
+        function(input) {
+            return -(computeScore[0](input));
+        },
+        function(input) {
+            var score = 0;
+            for (var i = 0; i < input.length; ++i) {
+                score += input[i].type.name === me.type.name ? 1 : -1;
+            }
+            return score;
+        },
+        function(input) {
+            return -(computeScore[0](input));
+        }
+    ];
 
     if (save == null || save.roomUUID !== roomUUID || save.myUUID == null) {
         register();
@@ -67,13 +93,13 @@ window.addEventListener('load', function() {
                 square.style.width = square.style.height = squareSize;
                 map.appendChild(square);
 
-                var onclick = (function(i, j) {
+                var onclick = (function(i, j, square) {
                     return function() {
                         if (square.classList.contains('free')) {
                             move(j, i);
                         }
                     };
-                })(i, j);
+                })(i, j, square);
                 square.addEventListener('click', onclick);
                 square.addEventListener('touchEnd', onclick);
             }
@@ -86,7 +112,7 @@ window.addEventListener('load', function() {
             member.picture.setAttribute('src', utils.getAsset(member));
             map.appendChild(member.picture);
             if (member.pos.x >= 0 && member.pos.y >= 0) {
-                onmoved(member.UUID, member.pos);
+                onmoved(member.UUID, member.pos, true);
             }
         }
     };
@@ -95,6 +121,7 @@ window.addEventListener('load', function() {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
             me = data.me;
+            me.state = 1;
 
             save = { roomUUID: roomUUID, myUUID: me.UUID };
             window.localStorage.setItem('savedGame', JSON.stringify(save));
@@ -124,7 +151,7 @@ window.addEventListener('load', function() {
         });
     }
 
-    function onmoved(UUID, newPos) {
+    function onmoved(UUID, newPos, skipStateComputation) {
         var personWhoMoved = utils.getMember(UUID);
 
         if (personWhoMoved != null) {
@@ -140,8 +167,15 @@ window.addEventListener('load', function() {
                 me = personWhoMoved;
             }
 
-            // Update state
-            var adjacents = utils.getAdjacentMembers(me);
+            if (!skipStateComputation) {
+                // Update state
+                var newState = computeScore[me.type.rules](utils.getAdjacentMembers());
+                if (me.state !== newState) {
+                    var colors = { '-1': 'red', '0': 'transparent', '1': 'green' };
+                    me.state = newState;
+                    me.picture.style['background-color'] = colors[String(me.state)];
+                }
+            }
         }
     }
 

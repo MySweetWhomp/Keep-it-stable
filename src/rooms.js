@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T16:09:17+02:00
+* @Last modified time: 2016-04-16T17:19:11+02:00
 */
 
 'use strict';
@@ -30,12 +30,12 @@ class Room {
 
         this.members = new MemberManager(this);
 
-        this.types = {
-            yellow: { },
-            green: { },
-            red: { },
-            purple: { }
-        };
+        this.types = [
+            { name: 'yellow', rules: 0 },
+            { name: 'green', rules: 1 },
+            { name: 'red', rules: 2 },
+            { name: 'purple', rules: 3 }
+        ];
 
         logger.debug(`Room construction, UUID is ${this.UUID}`);
         this.logMap();
