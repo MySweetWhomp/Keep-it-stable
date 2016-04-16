@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T20:13:04+02:00
+* @Last modified time: 2016-04-16T21:03:14+02:00
 */
 
 'use strict';
@@ -26,13 +26,14 @@ class Member {
         this.UUID = UUIDGenerator.v1();
         this.room = room;
         this.pos = { x: -1, y: -1 };
-        this.state = 0;
+        this.state = 50;
+        this.stateDirection = 0;
+        this.dead = false;
 
         this.lastaction = Date.now();
 
         var possibleTypes = getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[possibleTypes[getRandomInt(0, possibleTypes.length)]];
-        // Must generate a surname
 
         logger.debug(`Member construction, UUID is ${this.UUID}`);
     }
@@ -42,7 +43,9 @@ class Member {
             UUID: this.UUID,
             pos: this.pos,
             type: this.type,
-            state: this.state
+            state: this.state,
+            stateDirection: this.stateDirection,
+            dead: this.dead
         };
     }
 
@@ -94,7 +97,7 @@ class MemberManager {
     getAllInfo() {
         let members = [];
         for (var i = 0; i < this.members.length; ++i) {
-            if (this.members[i].sock != null) {
+            if (this.members[i].sock != null || this.members[i].dead) {
                 members.push(this.members[i].getInfo());
             }
         }

@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T19:49:38+02:00
+* @Last modified time: 2016-04-16T21:50:39+02:00
 */
 
 window.addEventListener('load', function() {
@@ -16,6 +16,9 @@ window.addEventListener('load', function() {
     window.addEventListener('beforeunload', function(){
         sock.close();
     });
+
+    var scale = 20,
+        scaleAssets = ['tomb', 'verysad', 'sad', 'neutral', 'happy', 'veryhappy', 'veryhappy'];
 
     var utils = {
         getRandomInt: function(min, max) { return Math.floor(Math.random() * (max - min)) + min; },
@@ -49,8 +52,10 @@ window.addEventListener('load', function() {
             return positives;
         },
         getAsset: function(member) {
-            var states = { '-1': 'verysad', '0': 'neutral', '1': 'veryhappy' }
-            return '/static/assets/' + member.type.name + states[member.state] + '.gif';
+            var stateAsset = member.state
+                ? scaleAssets[parseInt(member.state / scale) + 1]
+                : scaleAssets[0];
+            return '/static/assets/' + member.type.name + stateAsset + '.gif';
         }
     };
 
@@ -100,7 +105,7 @@ window.addEventListener('load', function() {
 
                 var onclick = (function(i, j, square) {
                     return function() {
-                        if (square.classList.contains('free')) {
+                        if (square.classList.contains('free') && !me.dead && me.state > 0) {
                             move(j, i);
                         }
                     };
@@ -150,9 +155,11 @@ window.addEventListener('load', function() {
             sock.on('disconnected', function(oldMember) {
                 var oldMemberIndex = utils.getMemberIndex(oldMember);
                 oldMember = room.members[oldMemberIndex];
-                map.removeChild(oldMember.picture);
-                utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
-                room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
+                if (!oldMember.dead && oldMember.state > 0) {
+                    map.removeChild(oldMember.picture);
+                    utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
+                    room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
+                }
                 updateState();
             });
 
@@ -162,22 +169,38 @@ window.addEventListener('load', function() {
 
             sock.on('changedstate', function(data) {
                 var member = utils.getMember(data.member);
-
-                member.state = data.state;
-                member.picture.setAttribute('src', utils.getAsset(member));
-
                 if (data.member === me.UUID) {
                     me = member;
                 }
+
+                member.state = data.state;
+                member.picture.setAttribute('src', utils.getAsset(member));
             });
+
+            var step = 5;
+            function theStateUpdate() {
+                var cat = parseInt(me.state / scale);
+                me.state = Math.min(100, Math.max(0, me.state + (step * me.stateDirection)));
+                if (parseInt(me.state / scale) !== cat || (me.state === 0 && !me.dead)) {
+                    updateState();
+                }
+                setTimeout(theStateUpdate, 1000);
+            };
+            setTimeout(theStateUpdate, 1000);
         });
     }
 
+    var isFirst = true;
     function updateState() {
-        var newState = computeScore[me.type.rules](utils.getAdjacentMembers());
-        if (me.state !== newState) {
-            changeState(newState);
+        var newStateDirection = computeScore[me.type.rules](utils.getAdjacentMembers());
+        if (me.stateDirection !== newStateDirection) {
+            me.stateDirection = newStateDirection;
+            if (!isFirst) {
+                me.state = Math.min(100, Math.max(0, me.state + (scale * me.stateDirection)));
+            }
         }
+        changeState(me.state, me.stateDirection);
+        isFirst = false;
     }
 
     function onmoved(UUID, newPos, skipStateComputation) {
@@ -224,7 +247,7 @@ window.addEventListener('load', function() {
         move(x, y);
     }
 
-    function changeState(newState) {
-        sock.emit('changestate', newState);
+    function changeState(newState, newStateDirection) {
+        sock.emit('changestate', { state: newState, direction: newStateDirection });
     }
 });
