@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T18:21:42+02:00
+* @Last modified time: 2016-04-16T19:49:38+02:00
 */
 
 window.addEventListener('load', function() {
@@ -69,7 +69,7 @@ window.addEventListener('load', function() {
             for (var i = 0; i < input.length; ++i) {
                 score += input[i].type.name === me.type.name ? 1 : -1;
             }
-            return score;
+            return score / (score || 1);
         },
         function(input) {
             return -(computeScore[0](input));
@@ -83,6 +83,7 @@ window.addEventListener('load', function() {
     }
 
     function initMap() {
+        cursor = document.querySelector('.cursor');
         map = document.querySelector('.map');
         map.style.width = String(squareSize * room.size[0] + 1) + 'px';
         map.style.height = String(squareSize * room.size[0] + 1) + 'px';
@@ -131,9 +132,7 @@ window.addEventListener('load', function() {
             room = data.room;
             initMap();
 
-            if (myUUID == null || me.pos.x < 0 || me.pos.y < 0) {
-                moveToRandom();
-            }
+            moveToRandom();
 
             sock.on('connected', function(newMember) {
                 if (newMember.UUID !== me.UUID && utils.getMember(newMember.UUID) == null) {
@@ -162,6 +161,13 @@ window.addEventListener('load', function() {
         });
     }
 
+    function updateState() {
+        var newState = computeScore[me.type.rules](utils.getAdjacentMembers());
+        if (me.state !== newState) {
+            changeState(newState);
+        }
+    }
+
     function onmoved(UUID, newPos, skipStateComputation) {
         var personWhoMoved = utils.getMember(UUID);
 
@@ -176,14 +182,13 @@ window.addEventListener('load', function() {
 
             if (UUID === me.UUID) {
                 me = personWhoMoved;
+                cursor.style.top = me.picture.style.top;
+                cursor.style.left = me.picture.style.left;
             }
 
             if (!skipStateComputation) {
                 // Update state
-                var newState = computeScore[me.type.rules](utils.getAdjacentMembers());
-                if (me.state !== newState) {
-                    changeState(newState);
-                }
+                updateState();
             }
         }
     }

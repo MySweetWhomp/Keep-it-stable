@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T17:19:11+02:00
+* @Last modified time: 2016-04-16T19:49:13+02:00
 */
 
 'use strict';
@@ -70,7 +70,7 @@ class Room {
     }
 
     logMap() {
-        logger.debug(`\n${this.map}`);
+        // logger.debug(`\n${this.map}`);
     }
 }
 
