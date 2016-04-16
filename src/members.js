@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T14:08:42+02:00
+* @Last modified time: 2016-04-16T16:18:28+02:00
 */
 
 'use strict';
@@ -12,11 +12,23 @@ const UUIDGenerator = require('node-uuid');
 
 const logger = require('./logger');
 
+const getRandomInt = function(min, max) { return Math.floor(Math.random() * (max - min)) + min; };
+const getNRandomInts = function(min, max, n) {
+    let x = []
+    for (var i = 0; i < n; ++i) {
+        x.push(getRandomInt(min, max));
+    }
+    return x;
+}
+
 class Member {
     constructor(room) {
         this.UUID = UUIDGenerator.v1();
         this.room = room;
         this.pos = { x: -1, y: -1 };
+
+        var possibleTypes = getNRandomInts(0, Object.keys(this.room.types).length, 100);
+        this.type = Object.keys(this.room.types)[possibleTypes[getRandomInt(0, possibleTypes.length)]];
         // Must generate a surname
 
         logger.debug(`Member construction, UUID is ${this.UUID}`);
@@ -25,7 +37,8 @@ class Member {
     getInfo() {
         return {
             UUID: this.UUID,
-            pos: this.pos
+            pos: this.pos,
+            type: this.type
         };
     }
 

@@ -3,8 +3,13 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T14:54:56+02:00
+* @Last modified time: 2016-04-16T16:10:06+02:00
 */
+
+html, body {
+    padding: 0;
+    margin: 0;
+}
 
 .map, .square {
     border-style: solid;
@@ -17,6 +22,7 @@
 .map {
     position: relative;
 
+    margin: 10px;
     border-width: 1px 0 0 1px;
 
     background-color: rgb(122, 122, 122);
@@ -30,6 +36,16 @@
     background-color: sand;
 }
 
+.square {
+    cursor: pointer;
+}
+
 .character {
     position: absolute;
+
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+
+    -webkit-pointer-events: none;
+            pointer-events: none;
 }

@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T14:31:18+02:00
+* @Last modified time: 2016-04-16T16:09:17+02:00
 */
 
 'use strict';
@@ -30,6 +30,13 @@ class Room {
 
         this.members = new MemberManager(this);
 
+        this.types = {
+            yellow: { },
+            green: { },
+            red: { },
+            purple: { }
+        };
+
         logger.debug(`Room construction, UUID is ${this.UUID}`);
         this.logMap();
     }
@@ -53,12 +60,12 @@ class Room {
     }
 
     freeCell(x, y) {
-        this.map = this.map.substr(0, this.getCellIndex(x, y)) + '.' + this.map.substr(this.getCellIndex(x, y) + 1);
+        this.map = `${this.map.substr(0, this.getCellIndex(x, y))}.${this.map.substr(this.getCellIndex(x, y) + 1)}`;
         this.logMap();
     }
 
     occupyCell(x, y) {
-        this.map = this.map.substr(0, this.getCellIndex(x, y)) + 'x' + this.map.substr(this.getCellIndex(x, y) + 1);
+        this.map = `${this.map.substr(0, this.getCellIndex(x, y))}x${this.map.substr(this.getCellIndex(x, y) + 1)}`;
         this.logMap();
     }
 

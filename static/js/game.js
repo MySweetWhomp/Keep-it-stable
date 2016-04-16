@@ -3,15 +3,14 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T14:53:29+02:00
+* @Last modified time: 2016-04-16T16:33:59+02:00
 */
 
 window.addEventListener('load', function() {
-
     var sock = io('http://' + window.location.hostname + ':3001'),
         roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
         save = JSON.parse(window.localStorage.getItem('savedGame')),
-        squareSize = 96,
+        squareSize = 80,
         me, room, map, room;
 
     window.addEventListener('beforeunload', function(){
@@ -30,8 +29,23 @@ window.addEventListener('load', function() {
         getMapCell: function(x, y) {
             return map.querySelectorAll('.square')[(y * room.size[0]) + x];
         },
-        getAsset: function() {
-            return '/static/assets/blob.png';
+        getAdjacentMembers: function(member) {
+            var positives = [],
+                refX = member.pos.x,
+                refY = member.pos.y;
+            for (var i = 0; i < room.members.length; ++i) {
+                var x = room.members[i].pos.x,
+                    y = room.members[i].pos.y;
+                if ((y >= refY - 1) && (y <= refY + 1) &&
+                    (x >= refX - 1) && (x <= refX + 1) &&
+                    (member.UUID !== room.members[i].UUID)) {
+                        positives.push(member);
+                }
+            }
+            return positives;
+        },
+        getAsset: function(member) {
+            return '/static/assets/' + member.type + '.png';
         }
     };
 
@@ -51,24 +65,27 @@ window.addEventListener('load', function() {
                 var square = document.createElement('div');
                 square.classList.add('square', 'free');
                 square.style.width = square.style.height = squareSize;
-                square.addEventListener('click', (function(i, j) {
+                map.appendChild(square);
+
+                var onclick = (function(i, j) {
                     return function() {
                         if (square.classList.contains('free')) {
                             move(j, i);
                         }
                     };
-                })(i, j));
-                map.appendChild(square);
+                })(i, j);
+                square.addEventListener('click', onclick);
+                square.addEventListener('touchEnd', onclick);
             }
         }
 
         for (var i = 0; i < room.members.length; ++i) {
             var member = room.members[i];
+            member.picture = document.createElement('img');
+            member.picture.classList.add('character');
+            member.picture.setAttribute('src', utils.getAsset(member));
+            map.appendChild(member.picture);
             if (member.pos.x >= 0 && member.pos.y >= 0) {
-                member.picture = document.createElement('img');
-                member.picture.classList.add('character');
-                member.picture.setAttribute('src', utils.getAsset());
-                map.appendChild(member.picture);
                 onmoved(member.UUID, member.pos);
             }
         }
@@ -93,6 +110,10 @@ window.addEventListener('load', function() {
 
             sock.on('connected', function(newMember) {
                 if (newMember.UUID !== me.UUID && utils.getMember(newMember.UUID) == null) {
+                    newMember.picture = document.createElement('img');
+                    newMember.picture.classList.add('character');
+                    newMember.picture.setAttribute('src', utils.getAsset(newMember));
+                    map.appendChild(newMember.picture);
                     room.members.push(newMember);
                 }
             });
@@ -112,8 +133,15 @@ window.addEventListener('load', function() {
             }
             personWhoMoved.pos = newPos;
             utils.getMapCell(personWhoMoved.pos.x, personWhoMoved.pos.y).classList.remove('free');
-            personWhoMoved.picture.style.top = personWhoMoved.pos.y * squareSize;
-            personWhoMoved.picture.style.left = personWhoMoved.pos.x * squareSize;
+            personWhoMoved.picture.style.top = (personWhoMoved.pos.y * squareSize) + (squareSize / 2);
+            personWhoMoved.picture.style.left = (personWhoMoved.pos.x * squareSize) + (squareSize / 2);
+
+            if (UUID === me.UUID) {
+                me = personWhoMoved;
+            }
+
+            // Update state
+            var adjacents = utils.getAdjacentMembers(me);
         }
     }
 
