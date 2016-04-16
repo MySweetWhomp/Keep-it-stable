@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T17:45:47+02:00
+* @Last modified time: 2016-04-16T18:21:42+02:00
 */
 
 window.addEventListener('load', function() {
@@ -46,7 +46,8 @@ window.addEventListener('load', function() {
             return positives;
         },
         getAsset: function(member) {
-            return '/static/assets/' + member.type.name + '.png';
+            var states = { '-1': 'verysad', '0': 'neutral', '1': 'veryhappy' }
+            return '/static/assets/' + member.type.name + states[member.state] + '.gif';
         }
     };
 
@@ -121,7 +122,6 @@ window.addEventListener('load', function() {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
             me = data.me;
-            me.state = 1;
 
             save = { roomUUID: roomUUID, myUUID: me.UUID };
             window.localStorage.setItem('savedGame', JSON.stringify(save));
@@ -148,6 +148,17 @@ window.addEventListener('load', function() {
             sock.on('moved', function(data) {
                 onmoved(data.member, data.instruction);
             });
+
+            sock.on('changedstate', function(data) {
+                var member = utils.getMember(data.member);
+
+                member.state = data.state;
+                member.picture.setAttribute('src', utils.getAsset(member));
+
+                if (data.member === me.UUID) {
+                    me = member;
+                }
+            });
         });
     }
 
@@ -171,9 +182,7 @@ window.addEventListener('load', function() {
                 // Update state
                 var newState = computeScore[me.type.rules](utils.getAdjacentMembers());
                 if (me.state !== newState) {
-                    var colors = { '-1': 'red', '0': 'transparent', '1': 'green' };
-                    me.state = newState;
-                    me.picture.style['background-color'] = colors[String(me.state)];
+                    changeState(newState);
                 }
             }
         }
@@ -196,5 +205,9 @@ window.addEventListener('load', function() {
             }
         }
         move(x, y);
+    }
+
+    function changeState(newState) {
+        sock.emit('changestate', newState);
     }
 });

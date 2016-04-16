@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T17:20:29+02:00
+* @Last modified time: 2016-04-16T18:21:37+02:00
 */
 
 'use strict';
@@ -26,6 +26,7 @@ class Member {
         this.UUID = UUIDGenerator.v1();
         this.room = room;
         this.pos = { x: -1, y: -1 };
+        this.state = 0;
 
         var possibleTypes = getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[possibleTypes[getRandomInt(0, possibleTypes.length)]];
@@ -38,7 +39,8 @@ class Member {
         return {
             UUID: this.UUID,
             pos: this.pos,
-            type: this.type
+            type: this.type,
+            state: this.state
         };
     }
 
