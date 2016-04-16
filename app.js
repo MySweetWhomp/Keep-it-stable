@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-16T07:38:45+02:00
+* @Last modified time: 2016-04-16T07:43:30+02:00
 */
 
 'use strict';
@@ -14,6 +14,7 @@ const logger = require('./src/logger');
 
 
 let app = express();
+let roomManager = require('./src/rooms');
 
 app.get('/404', function(req, res) {
     // Oops, it seems that you're looking for something that doesn't exist.
@@ -37,7 +38,7 @@ app.get('/r/:ruuid', function(req, res) {
     logger.debug(`Trying to access ${roomUUID} room`);
 
     // Check if room exists
-    if (false) {
+    if (roomManager.exist(roomUUID)) {
         res.send(`You\'re in ${roomUUID}`);
     } else {
         logger.error(`Room ${roomUUID} does not exist`);
