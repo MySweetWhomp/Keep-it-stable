@@ -74,6 +74,11 @@ app.listen(3000, function() {
                     logger.debug(`Ask register for ${data.memberUUID}@${data.roomUUID}`);
 
                     member = room.members.get(data.memberUUID) || room.registerMember();
+                    if (Date.now() - member.lastaction >= 30000) {
+                        logger.debug(`Ask register for ${data.roomUUID}`);
+
+                        member = room.registerMember();
+                    }
                 } else {
                     logger.debug(`Ask register for ${data.roomUUID}`);
 
@@ -98,11 +103,23 @@ app.listen(3000, function() {
                     } else {
                         member.sock.emit('nomoved');
                     }
+
+                    member.lastaction = Date.now();
                 });
 
                 member.sock.on('changestate', function(newstate) {
                     member.state = newstate;
                     room.members.emit('changedstate', { member: member.UUID, state: newstate });
+
+                    member.lastaction = Date.now();
+                });
+
+                member.sock.on('disconnect', function() {
+                    logger.debug(`${member.UUID} disconnected`);
+
+                    room.members.emit('disconnected', member.UUID);
+
+                    member.disconnect();
                 });
             }
         });

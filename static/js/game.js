@@ -19,12 +19,15 @@ window.addEventListener('load', function() {
 
     var utils = {
         getRandomInt: function(min, max) { return Math.floor(Math.random() * (max - min)) + min; },
-        getMember: function(UUID) {
+        getMemberIndex: function(UUID) {
             for (var i = 0; i < room.members.length; ++i) {
                 if (UUID === room.members[i].UUID) {
-                    return room.members[i];
+                    return i;
                 }
             }
+        },
+        getMember: function(UUID) {
+            return room.members[utils.getMemberIndex(UUID)];
         },
         getMapCell: function(x, y) {
             return map.querySelectorAll('.square')[(y * room.size[0]) + x];
@@ -142,6 +145,15 @@ window.addEventListener('load', function() {
                     map.appendChild(newMember.picture);
                     room.members.push(newMember);
                 }
+            });
+
+            sock.on('disconnected', function(oldMember) {
+                var oldMemberIndex = utils.getMemberIndex(oldMember);
+                oldMember = room.members[oldMemberIndex];
+                map.removeChild(oldMember.picture);
+                utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
+                room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
+                updateState();
             });
 
             sock.on('moved', function(data) {

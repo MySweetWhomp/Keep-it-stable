@@ -28,6 +28,8 @@ class Member {
         this.pos = { x: -1, y: -1 };
         this.state = 0;
 
+        this.lastaction = Date.now();
+
         var possibleTypes = getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[possibleTypes[getRandomInt(0, possibleTypes.length)]];
         // Must generate a surname
@@ -44,17 +46,26 @@ class Member {
         };
     }
 
-    move(instruction) {
+    freeCellPos() {
         if (this.pos.x >= 0 && this.pos.y >= 0) {
             this.room.freeCell(this.pos.x, this.pos.y);
         }
+    }
+
+    move(instruction) {
+        this.freeCellPos();
         this.pos.x = instruction.x;
         this.pos.y = instruction.y;
         this.room.occupyCell(this.pos.x, this.pos.y);
 
         logger.info(`Player ${this.UUID}@${this.room.UUID} moved to (${this.pos.x}, ${this.pos.y})`);
     }
- }
+
+    disconnect() {
+        this.sock = undefined;
+        this.freeCellPos();
+    }
+}
 
 class MemberManager {
     constructor(room) {
@@ -82,7 +93,9 @@ class MemberManager {
     getAllInfo() {
         let members = [];
         for (var i = 0; i < this.members.length; ++i) {
-            members.push(this.members[i].getInfo());
+            if (this.members[i].sock != null) {
+                members.push(this.members[i].getInfo());
+            }
         }
         return members;
     }
@@ -93,7 +106,9 @@ class MemberManager {
 
     emit(type, data) {
         for (var i = 0; i < this.members.length; ++i) {
-            this.members[i].sock.emit(type, data);
+            if (this.members[i].sock != null) {
+                this.members[i].sock.emit(type, data);
+            }
         }
     }
 }
