@@ -8,3 +8,5 @@ block content
                 a(href='r/' + room.UUID)= room.UUID
                 | , Up since 
                 span.time(x-attr-since=room.startedAt)
+    form(method='post', action='/r')
+        button(type='submit') Create new room

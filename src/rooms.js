@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T09:34:50+02:00
+* @Last modified time: 2016-04-16T10:05:04+02:00
 */
 
 'use strict';
@@ -27,7 +27,6 @@ class RoomManager {
 
         // Dumb no database implementation
         this.rooms = { };
-        this.create();
     }
 
     exist(UUID) {

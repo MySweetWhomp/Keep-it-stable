@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T09:46:10+02:00
+* @Last modified time: 2016-04-16T10:07:00+02:00
 */
 
 'use strict';
@@ -30,7 +30,11 @@ app.get('/', function(req, res) {
 
 app.post('/r', function(req, res) {
     // Create new room
-    // Redirect to /r/<new-room_UUID>
+    let newRoom = roomManager.create();
+
+    if (newRoom != null) {
+        res.redirect(`/r/${newRoom.UUID}`);
+    }
 });
 
 app.get('/r/:ruuid', function(req, res) {
