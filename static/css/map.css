@@ -1,0 +1,35 @@
+/**
+* @Author: Paul Joannon <paulloz>
+* @Date:   2016-04-16T12:30:34+02:00
+* @Email:  hello@pauljoannon.com
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-16T14:54:56+02:00
+*/
+
+.map, .square {
+    border-style: solid;
+    border-color: rgb(61, 61, 61);
+
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+.map {
+    position: relative;
+
+    border-width: 1px 0 0 1px;
+
+    background-color: rgb(122, 122, 122);
+}
+
+.square {
+    display: inline-block;
+
+    border-width: 0 1px 1px 0;
+
+    background-color: sand;
+}
+
+.character {
+    position: absolute;
+}

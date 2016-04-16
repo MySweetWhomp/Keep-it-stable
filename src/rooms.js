@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T11:32:14+02:00
+* @Last modified time: 2016-04-16T14:31:18+02:00
 */
 
 'use strict';
@@ -18,9 +18,20 @@ class Room {
         this.UUID = UUID || UUIDGenerator.v1();
         this.startedAt = Date.now();
 
-        this.members = new MemberManager();
+        this.size = [7, 7];
+        this.map = '';
+        for (var i = 0; i < this.size[0]; ++i) {
+            let line = '';
+            for (var j = 0; j < this.size[1]; ++j) {
+                line += '.';
+            }
+            this.map += `${line}\n`;
+        }
+
+        this.members = new MemberManager(this);
 
         logger.debug(`Room construction, UUID is ${this.UUID}`);
+        this.logMap();
     }
 
     connect(userUUID) {
@@ -31,6 +42,28 @@ class Room {
         member = member || this.members.create();
 
         return member;
+    }
+
+    getCellIndex(x, y) {
+        return (y * this.size[0]) + y + x;
+    }
+
+    isCellFree(x, y) {
+        return this.map[this.getCellIndex(x, y)] === '.';
+    }
+
+    freeCell(x, y) {
+        this.map = this.map.substr(0, this.getCellIndex(x, y)) + '.' + this.map.substr(this.getCellIndex(x, y) + 1);
+        this.logMap();
+    }
+
+    occupyCell(x, y) {
+        this.map = this.map.substr(0, this.getCellIndex(x, y)) + 'x' + this.map.substr(this.getCellIndex(x, y) + 1);
+        this.logMap();
+    }
+
+    logMap() {
+        logger.debug(`\n${this.map}`);
     }
 }
 
