@@ -3,20 +3,8 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T13:52:54+02:00
+* @Last modified time: 2016-04-17T13:57:56+02:00
 */
-
-html, body {
-    padding: 0;
-    margin: 0;
-}
-
-html {
-    background-color: rgb(224, 117, 132);
-    background-image: url(/static/assets/BG.gif);
-    background-size: auto 100%;
-    background-repeat: repeat-x;
-}
 
 .game, .hud {
     display: none;
