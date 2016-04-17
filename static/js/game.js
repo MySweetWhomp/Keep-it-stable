@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T16:30:21+02:00
+* @Last modified time: 2016-04-17T16:37:05+02:00
 */
 
 window.addEventListener('load', function() {
@@ -309,9 +309,9 @@ window.addEventListener('load', function() {
         isFirst = false;
 
         var oldMusic = currentMusic;
-        if (me.state < 20) {
+        if (me.state < 40) {
             currentMusic = 'slow';
-        } else if (me.state >= 20 && me.state < 80) {
+        } else if (me.state >= 40 && me.state < 80) {
             currentMusic = 'neutral';
         } else {
             currentMusic = 'rapid';
