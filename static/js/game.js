@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T14:14:58+02:00
+* @Last modified time: 2016-04-17T14:52:57+02:00
 */
 
 window.addEventListener('load', function() {
@@ -67,7 +67,7 @@ window.addEventListener('load', function() {
                 if ((y >= refY - 1) && (y <= refY + 1) &&
                     (x >= refX - 1) && (x <= refX + 1) &&
                     (member.UUID !== room.members[i].UUID)) {
-                        positives.push(member);
+                        positives.push(room.members[i]);
                 }
             }
             return positives;
@@ -82,6 +82,22 @@ window.addEventListener('load', function() {
 
     var computeScore = [
         function(input) {
+            var score = 0;
+            for (var i = 0; i < input.length; ++i) {
+                score += input[i].type.name === me.type.name ? 1 : -1;
+                console.debug(input[i].type.name, me.type.name, input)
+            }
+            console.debug('here', score);
+            return score / (Math.abs(score) || 1);
+        },
+        function(input) {
+            var score = 0;
+            for (var i = 0; i < input.length; ++i) {
+                score += input[i].type.name === me.type.antagonist ? -1 : 1;
+            }
+            return score / (Math.abs(score) || 1);
+        },
+        function(input) {
             var total = 8;
             if (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1){
                 total -= (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) ? 5 : 3;
@@ -91,17 +107,7 @@ window.addEventListener('load', function() {
             return input.length >= (total / 2) ? -1 : 1;
         },
         function(input) {
-            return -(computeScore[0](input));
-        },
-        function(input) {
-            var score = 0;
-            for (var i = 0; i < input.length; ++i) {
-                score += input[i].type.name === me.type.name ? 1 : -1;
-            }
-            return score / (score || 1);
-        },
-        function(input) {
-            return -(computeScore[0](input));
+            return -(computeScore[2](input));
         }
     ];
 
@@ -171,7 +177,14 @@ window.addEventListener('load', function() {
 
             sock.on('startedplay', start);
             instructions.querySelector('img').setAttribute('src', '/static/assets/instructions000' + String(me.type.rules) + '.png');
-            instructions.querySelector('.instructionsme').setAttribute('src', '/static/assets/icons' + String(me.type.name) + '.gif');
+            instructions.querySelector('.instructionsme').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
+            if (me.type.rules === 1 && me.type.antagonist != null) {
+                console.debug(me.type.antagonist);
+                var antagonist = document.createElement('img');
+                antagonist.classList.add('instructionsantagonist');
+                antagonist.setAttribute('src', '/static/assets/icons' + me.type.antagonist + '.gif');
+                instructions.appendChild(antagonist);
+            }
             var startgame = function() {
                 instructions.style.display = 'none';
                 sock.emit('startplay');
@@ -259,6 +272,7 @@ window.addEventListener('load', function() {
                         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverunhappy.png)';
                     }
 
+                    document.querySelector('.game').style.display = 'none';
                     document.querySelector('.gameover').classList.remove('hidden');
                     setTimeout(function() {
                         sock.disconnect();

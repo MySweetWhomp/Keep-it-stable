@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T13:57:56+02:00
+* @Last modified time: 2016-04-17T14:42:53+02:00
 */
 
 .game, .hud {
@@ -189,4 +189,10 @@ div.instructions {
     position: absolute;
     top: 20px;
     left: 166px;
+}
+
+.instructionsantagonist {
+    position: absolute;
+    top: 105px;
+    left: 156px;
 }
