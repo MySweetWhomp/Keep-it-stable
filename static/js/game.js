@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T15:02:27+02:00
+* @Last modified time: 2016-04-17T15:48:27+02:00
 */
 
 window.addEventListener('load', function() {
@@ -16,9 +16,13 @@ window.addEventListener('load', function() {
             neutral: new Howl({
                 urls: ['/static/assets/neutral.mp3'],
                 loop: true
+            }),
+            rapid: new Howl({
+                urls: ['/static/assets/rapid.mp3'],
+                loop: true
             })
         },
-        musicFadeTiming = 4000,
+        musicFadeTiming = 2000,
         currentMusic,
         roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
         save = JSON.parse(window.localStorage.getItem('savedGame')),
@@ -163,7 +167,6 @@ window.addEventListener('load', function() {
         sock.on('registered', function(data) {
             currentMusic = 'neutral';
             musics[currentMusic].play();
-            musics[currentMusic].fade(0, 0, musicFadeTiming);
 
             me = data.me;
 
@@ -222,7 +225,7 @@ window.addEventListener('load', function() {
                 sock.on('disconnected', function(oldMember) {
                     var oldMemberIndex = utils.getMemberIndex(oldMember);
                     oldMember = room.members[oldMemberIndex];
-                    if (!oldMember.dead && oldMember.state > 0) {
+                    if (oldMember && !oldMember.dead && oldMember.state > 0) {
                         map.removeChild(oldMember.picture);
                         utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
                         room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
@@ -253,17 +256,23 @@ window.addEventListener('load', function() {
                             currentMusic = 'slow';
                         } else if (data.score >= 40 && data.score < 70) {
                             currentMusic = 'neutral';
+                        } else {
+                            currentMusic = 'rapid';
                         }
 
                         if (oldMusic !== currentMusic) {
-                            musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
-                                musics[oldMusic].stop();
-                            });
-                            musics[currentMusic].play();
-                            musics[currentMusic].fade(0, 1, musicFadeTiming);
+                            changeMusic(oldMusic);
                         }
                     }
                 });
+
+                function changeMusic(oldMusic) {
+                    musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
+                        musics[oldMusic].stop();
+                    });
+                    musics[currentMusic].play();
+                    musics[currentMusic].fade(0, 1, musicFadeTiming);
+                }
 
                 sock.on('gameover', function(data) {
                     if (data.world) {
@@ -277,6 +286,10 @@ window.addEventListener('load', function() {
                     setTimeout(function() {
                         sock.disconnect();
                     }, 3000);
+
+                    var oldMusic = currentMusic;
+                    currentMusic = 'slow';
+                    changeMusic(oldMusic);
                 });
 
                 var step = 5;
