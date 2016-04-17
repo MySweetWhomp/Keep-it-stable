@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T09:03:18+02:00
+* @Last modified time: 2016-04-17T10:04:48+02:00
 */
 
 html, body {
@@ -51,40 +51,73 @@ html, body {
 }
 
 .hud {
-    height: 40px;
+    position: relative;
+
+    width: 960px;
+    height: 122px;
+    margin: 0 auto;
+
+    background-image: url(/static/assets/HUD.gif);
 }
 
 .hud > div {
     position: absolute;
-    top: 10px;
+    top: 50%;
 
     width: 200px;
-    height: 20px;
+    height: 44px;
 
-    border: 1px solid rgb(61, 61, 61);
+    background-color: rgb(82, 35, 118);
+
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+
+.hud img {
+    position: relative;
+    z-index: 20;
 }
 
 .hud .megauge {
-    left: 25px;
+    left: 85px;
 }
 
 .hud .crewgauge {
-    left: 50%;
-
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%);
+    left: 395px;
 }
 
 .hud .worldgauge {
-    right: 25px;
+    right: 50px;
 }
 
 .hud .gauge {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 10;
 
     height: 100%;
 
-    background: red;
+    background-image: url(/static/assets/jauge.gif);
+    background-repeat: repeat-x;
+}
+
+.hud .icon {
+    position: absolute;
+    top: 50%;
+
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+
+.hud .icon.meicon {
+    left: 30px;
+}
+
+.hud .icon.crewicon {
+    left: 310px;
+}
+
+.hud .icon.worldicon {
+    right: 275px;
 }

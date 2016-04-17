@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T09:19:46+02:00
+* @Last modified time: 2016-04-17T10:06:39+02:00
 */
 
 window.addEventListener('load', function() {
@@ -140,6 +140,9 @@ window.addEventListener('load', function() {
         sock.on('registered', function(data) {
             me = data.me;
 
+            document.querySelector('.meicon').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
+            document.querySelector('.crewicon').setAttribute('src', '/static/assets/iconsgroup' + me.type.name + '.gif');
+
             save = { roomUUID: roomUUID, myUUID: me.UUID };
             window.localStorage.setItem('savedGame', JSON.stringify(save));
 
@@ -191,7 +194,6 @@ window.addEventListener('load', function() {
             });
 
             sock.on('updatedgauge', function(data) {
-                console.debug(data);
                 if (data.crew != null) {
                     gauge.crew.style.width = String(data.score) + '%';
                 } else {
