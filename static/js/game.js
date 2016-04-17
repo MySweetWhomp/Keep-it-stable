@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T13:44:56+02:00
+* @Last modified time: 2016-04-17T13:53:04+02:00
 */
 
 window.addEventListener('load', function() {
@@ -222,10 +222,12 @@ window.addEventListener('load', function() {
 
                 sock.on('gameover', function(data) {
                     if (data.world) {
+                        document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoversociety.png)';
                     } else {
+                        document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverunhappy.png)';
                     }
 
-                    document.querySelector('.gameover').style.opacity = 1;
+                    document.querySelector('.gameover').classList.remove('hidden');
                     setTimeout(function() {
                         sock.disconnect();
                     }, 3000);

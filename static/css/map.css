@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T13:46:44+02:00
+* @Last modified time: 2016-04-17T13:52:54+02:00
 */
 
 html, body {
@@ -174,13 +174,18 @@ html {
     z-index: 100;
 
     background-color: rgb(82, 35, 118);
+    background-repeat: no-repeat;
+    background-position: top center;
+
+    -webkit-transition: opacity 2s ease-in;
+            transition: opacity 2s ease-in;
+}
+
+.gameover.hidden {
     opacity: 0;
 
     -webkit-pointer-events: none;
             pointer-events: none;
-
-    -webkit-transition: opacity 2s ease-in;
-            transition: opacity 2s ease-in;
 }
 
 div.instructions {
