@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T14:52:57+02:00
+* @Last modified time: 2016-04-17T15:02:27+02:00
 */
 
 window.addEventListener('load', function() {
@@ -163,7 +163,7 @@ window.addEventListener('load', function() {
         sock.on('registered', function(data) {
             currentMusic = 'neutral';
             musics[currentMusic].play();
-            musics[currentMusic].fade(0, 1, musicFadeTiming);
+            musics[currentMusic].fade(0, 0, musicFadeTiming);
 
             me = data.me;
 

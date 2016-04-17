@@ -1,0 +1,73 @@
+/**
+* @Author: Paul Joannon <paulloz>
+* @Date:   2016-04-17T15:04:53+02:00
+* @Email:  hello@pauljoannon.com
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-17T15:23:32+02:00
+*/
+
+@font-face {
+    font-family: 'pixel';
+    src: url(../assets/pixelsix10.ttf);
+}
+
+html, body, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    width: 960;
+    margin: 0 auto;
+
+    font-family: 'pixel', sans-serif;
+    font-size: 20px;
+}
+
+ul, form {
+    margin: 4em auto 0 auto;
+
+    text-align: center;
+
+    list-style-type: none;
+}
+
+form {
+    margin: 1em auto;
+}
+
+button {
+    padding: .5em 1em;
+
+    background-color: rgba(195, 113, 178, .3);
+    border: 1px solid #ffffff;
+    border-radius: .2em;
+
+    color: rgb(82, 35, 118);
+    font-family: 'pixel', sans-serif;
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+p, a {
+    color: #ffffff;
+}
+
+p {
+    position: absolute;
+    bottom: 1em;
+    left: 0;
+
+    width: 100%;
+
+    text-align: center;
+}
+
+img.inline {
+    display: inline;
+}
+
+img.inline:last-of-type {
+    margin-left: 4em;
+}

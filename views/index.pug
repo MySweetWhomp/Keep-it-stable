@@ -1,12 +1,31 @@
 extends ./base.pug
 
+block style
+    link(type='text/css', rel='stylesheet', href='/static/css/index.css')
+
 block content
-    h1 BJR C CHIEN
-    ul
-        each room in rooms
-            li
-                a(href='r/' + room.UUID)= room.UUID
-                | , Up since 
-                span.time(x-attr-since=room.startedAt)
-    form(method='post', action='/r')
-        button(type='submit') Create new room
+    div.content
+        img(src='/static/assets/title.png')
+        ul
+            each room in rooms
+                li
+                    a(href='r/' + room.UUID)= room.UUID
+                    | , Up since 
+                    span.time(x-attr-since=room.startedAt)
+        form(method='post', action='/r')
+            button(type='submit') Create new room
+        p
+            img.inline(src='/static/assets/yellowveryhappy.gif')
+            img.inline(src='/static/assets/purpleveryhappy.gif')
+            img.inline(src='/static/assets/redveryhappy.gif')
+            img.inline(src='/static/assets/greenverysad.gif')
+            br
+            br
+            | a game created during the diversity jam (April 15-17, 2016, Paris)
+            br
+            | by 
+            a(href='https://twitter.com/jelyl_', target='_blank') jelyl
+            | , 
+            a(href='https://twitter.com/kokonaught', target='_blank') kokonaught
+            |  and 
+            a(href='https://twitter.com/pauljoannon', target='_blank') paulloz
