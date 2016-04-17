@@ -2,8 +2,8 @@
 * @Author: Paul Joannon
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T17:01:49+02:00
+* @Last modified by:   Paul Joannon
+* @Last modified time: 2016-04-17T21:09:21+02:00
 */
 
 'use strict';
@@ -14,8 +14,8 @@ const MemberManager = require('./members');
 const logger = require('./logger');
 
 class Room {
-    constructor(UUID) {
-        this.UUID = UUID || UUIDGenerator.v1();
+    constructor() {
+        this.UUID = UUIDGenerator.v1();
         this.startedAt = Date.now();
 
         this.size = [6, 4];
@@ -148,15 +148,14 @@ class RoomManager {
 
         // Dumb no database implementation
         this.rooms = { };
-        this.create('test-room');
     }
 
     exists(UUID) {
         return this.rooms[UUID] != null;
     }
 
-    create(UUID) {
-        let newRoom = new Room(UUID);
+    create() {
+        let newRoom = new Room();
 
         this.rooms[newRoom.UUID] = newRoom;
 
