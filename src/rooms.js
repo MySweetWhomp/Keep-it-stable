@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T16:27:46+02:00
+* @Last modified time: 2016-04-17T16:47:23+02:00
 */
 
 'use strict';
@@ -112,7 +112,10 @@ class Room {
                 this.crews[members[i].type.name] += members[i].state;
             }
         }
-        this.crews[crew] /= n[crew];
+        this.crews['yellow'] /= (n['yellow'] || 1);
+        this.crews['green'] /= (n['green'] || 1);
+        this.crews['red'] /= (n['red'] || 1);
+        this.crews['purple'] /= (n['purple'] || 1);
         this.members.emit('updatedgauge', { score: this.crews[crew], crew: crew }, crew);
 
         var now = Date.now();
