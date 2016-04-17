@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T15:26:50+02:00
+* @Last modified time: 2016-04-17T15:34:52+02:00
 */
 
 'use strict';
@@ -123,6 +123,7 @@ class Room {
 
         if (this.world < 20) {
             this.members.emit('gameover', { world: true });
+            module.exports.remove(this.UUID);
         }
     }
 
@@ -158,6 +159,10 @@ class RoomManager {
 
     get(UUID) {
         return this.rooms[UUID];
+    }
+
+    remove(UUID) {
+        this.rooms[UUID] = undefined;
     }
 }
 

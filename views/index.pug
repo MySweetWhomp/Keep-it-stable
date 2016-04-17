@@ -8,10 +8,11 @@ block content
         img(src='/static/assets/title.png')
         ul
             each room in rooms
-                li
-                    a(href='r/' + room.UUID)= room.UUID
-                    | , Up since 
-                    span.time(x-attr-since=room.startedAt)
+                if room
+                    li
+                        a(href='r/' + room.UUID)= room.UUID
+                        | , Up since 
+                        span.time(x-attr-since=room.startedAt)
         form(method='post', action='/r')
             button(type='submit') Create new room
         p
