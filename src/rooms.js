@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T16:47:23+02:00
+* @Last modified time: 2016-04-17T17:01:49+02:00
 */
 
 'use strict';
@@ -130,8 +130,6 @@ class Room {
             this.members.emit('updatedgauge', { score: this.world });
             this.lastupdatescore = now;
         }
-
-        logger.debug(this.world, divisor, this.crews, n)
 
         if (this.world < 20) {
             this.members.emit('gameover', { world: true });
