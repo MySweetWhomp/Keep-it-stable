@@ -3,7 +3,7 @@
 * @Date:   2016-04-17T21:25:30+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:28:10+02:00
+* @Last modified time: 2016-04-17T21:39:52+02:00
 */
 
 'use strict';
@@ -19,6 +19,9 @@ module.exports = exports = {
             x.push(module.exports.getRandomInt(min, max));
         }
         return x;
-    }
+    },
 
+    getRandomItemFrom: function(input) {
+        return input[module.exports.getRandomInt(0, input.length)];
+    }
 };
