@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:17:32+02:00
+* @Last modified time: 2016-04-17T21:27:08+02:00
 */
 
 'use strict';
@@ -13,14 +13,7 @@ const UUIDGenerator = require('node-uuid');
 
 const logger = require('./logger');
 
-const getRandomInt = function(min, max) { return Math.floor(Math.random() * (max - min)) + min; };
-const getNRandomInts = function(min, max, n) {
-    let x = []
-    for (var i = 0; i < n; ++i) {
-        x.push(getRandomInt(min, max));
-    }
-    return x;
-}
+const utils = require('./utils');
 
 class Member {
     constructor(room) {
@@ -33,8 +26,8 @@ class Member {
 
         this.lastaction = Date.now();
 
-        var possibleTypes = getNRandomInts(0, Object.keys(this.room.types).length, 100);
-        this.type = this.room.types[possibleTypes[getRandomInt(0, possibleTypes.length)]];
+        var possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
+        this.type = this.room.types[possibleTypes[utils.getRandomInt(0, possibleTypes.length)]];
 
         logger.debug(`Member construction, UUID is ${this.UUID}`);
     }
