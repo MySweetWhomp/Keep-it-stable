@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T18:43:24+02:00
+* @Last modified time: 2016-04-17T09:03:18+02:00
 */
 
 html, body {
@@ -48,4 +48,43 @@ html, body {
 
     -webkit-pointer-events: none;
             pointer-events: none;
+}
+
+.hud {
+    height: 40px;
+}
+
+.hud > div {
+    position: absolute;
+    top: 10px;
+
+    width: 200px;
+    height: 20px;
+
+    border: 1px solid rgb(61, 61, 61);
+}
+
+.hud .megauge {
+    left: 25px;
+}
+
+.hud .crewgauge {
+    left: 50%;
+
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+}
+
+.hud .worldgauge {
+    right: 25px;
+}
+
+.hud .gauge {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+
+    background: red;
 }

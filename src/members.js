@@ -1,9 +1,10 @@
+
 /**
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T21:03:14+02:00
+* @Last modified time: 2016-04-17T09:06:00+02:00
 */
 
 'use strict';
@@ -108,10 +109,12 @@ class MemberManager {
         return this.members[this.membersMap[UUID]];
     }
 
-    emit(type, data) {
+    emit(type, data, crew) {
         for (var i = 0; i < this.members.length; ++i) {
             if (this.members[i].sock != null) {
-                this.members[i].sock.emit(type, data);
+                if (crew == null || this.members[i].type.name === crew) {
+                    this.members[i].sock.emit(type, data);
+                }
             }
         }
     }

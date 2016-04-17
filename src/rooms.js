@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T19:49:13+02:00
+* @Last modified time: 2016-04-17T09:33:17+02:00
 */
 
 'use strict';
@@ -37,6 +37,14 @@ class Room {
             { name: 'purple', rules: 3 }
         ];
 
+        this.world = 0;
+        this.crews = {
+            yellow: 0,
+            green: 0,
+            red: 0,
+            purple: 0
+        };
+
         logger.debug(`Room construction, UUID is ${this.UUID}`);
         this.logMap();
     }
@@ -67,6 +75,35 @@ class Room {
     occupyCell(x, y) {
         this.map = `${this.map.substr(0, this.getCellIndex(x, y))}x${this.map.substr(this.getCellIndex(x, y) + 1)}`;
         this.logMap();
+    }
+
+    updateScores(crew) {
+        let members = this.members.getAll();
+        let n = { yellow: 0, green: 0, red: 0, purple: 0 };
+        this.crews[crew] = 0;
+        for (var i = 0; i < members.length; ++i) {
+            if ((members[i].sock != null || members[i].dead) && members[i].type.name === crew) {
+                this.crews[crew] += members[i].state;
+                ++n[crew];
+            }
+        }
+        this.crews[crew] /= n[crew];
+        this.members.emit('updatedgauge', { score: this.crews[crew], crew: crew });
+
+        this.world = this.crews[crew];
+        if (crew !== 'yellow' && n['yellow'] > 0) {
+            this.world = (this.world + this.crews['yellow']) / 2;
+        }
+        if (crew !== 'green' && n['green'] > 0) {
+            this.world = (this.world + this.crews['green']) / 2;
+        }
+        if (crew !== 'red' && n['red'] > 0) {
+            this.world = (this.world + this.crews['red']) / 2;
+        }
+        if (crew !== 'purple' && n['purple'] > 0) {
+            this.world = (this.world + this.crews['purple']) / 2;
+        }
+        this.members.emit('updatedgauge', { score: this.world });
     }
 
     logMap() {

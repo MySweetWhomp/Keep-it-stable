@@ -2,8 +2,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T08:09:41+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-17T09:19:46+02:00
 */
 
 window.addEventListener('load', function() {
@@ -11,6 +11,11 @@ window.addEventListener('load', function() {
         roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
         save = JSON.parse(window.localStorage.getItem('savedGame')),
         squareSize = 80,
+        gauge = {
+            me: document.querySelector('.megauge .gauge'),
+            crew: document.querySelector('.crewgauge .gauge'),
+            world: document.querySelector('.worldgauge .gauge')
+        },
         me, room, map, room;
 
     window.addEventListener('beforeunload', function(){
@@ -185,6 +190,15 @@ window.addEventListener('load', function() {
                 member.picture.setAttribute('src', utils.getAsset(member));
             });
 
+            sock.on('updatedgauge', function(data) {
+                console.debug(data);
+                if (data.crew != null) {
+                    gauge.crew.style.width = String(data.score) + '%';
+                } else {
+                    gauge.world.style.width = String(data.score) + '%';
+                }
+            });
+
             var step = 5;
             function theStateUpdate() {
                 var cat = parseInt(me.state / scale);
@@ -192,7 +206,10 @@ window.addEventListener('load', function() {
                 if (parseInt(me.state / scale) !== cat || (me.state === 0 && !me.dead)) {
                     updateState();
                 }
-                setTimeout(theStateUpdate, 1000);
+                gauge.me.style['width'] = String(me.state) + '%';
+                if (!me.dead && me.date > 0) {
+                    setTimeout(theStateUpdate, 1000);
+                }
             };
             setTimeout(theStateUpdate, 1000);
         });
@@ -207,6 +224,7 @@ window.addEventListener('load', function() {
                 me.state = Math.min(100, Math.max(0, me.state + (scale * me.stateDirection)));
             }
         }
+        gauge.me.style['width'] = String(me.state) + '%';
         changeState(me.state, me.stateDirection);
         isFirst = false;
     }
