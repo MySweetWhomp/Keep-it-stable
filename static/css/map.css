@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T14:42:53+02:00
+* @Last modified time: 2016-04-17T15:29:18+02:00
 */
 
 .game, .hud {
@@ -147,7 +147,7 @@
 .game .bottom {
     position: absolute;
     left: 0;
-    bottom: -80px;
+    bottom: -120px;
 
     -webkit-pointer-events: none;
             pointer-events: none;
