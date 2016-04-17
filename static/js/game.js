@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T15:48:27+02:00
+* @Last modified time: 2016-04-17T15:54:46+02:00
 */
 
 window.addEventListener('load', function() {
@@ -165,9 +165,6 @@ window.addEventListener('load', function() {
     function register(myUUID) {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
-            currentMusic = 'neutral';
-            musics[currentMusic].play();
-
             me = data.me;
 
             document.querySelector('.meicon').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
@@ -267,9 +264,11 @@ window.addEventListener('load', function() {
                 });
 
                 function changeMusic(oldMusic) {
-                    musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
-                        musics[oldMusic].stop();
-                    });
+                    if (oldMusic) {
+                        musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
+                            musics[oldMusic].stop();
+                        });
+                    }
                     musics[currentMusic].play();
                     musics[currentMusic].fade(0, 1, musicFadeTiming);
                 }
