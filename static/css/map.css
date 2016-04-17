@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T12:54:20+02:00
+* @Last modified time: 2016-04-17T13:46:44+02:00
 */
 
 html, body {
@@ -190,4 +190,10 @@ div.instructions {
 
     width: 752px;
     height: 264px;
+}
+
+.instructionsme {
+    position: absolute;
+    top: 20px;
+    left: 166px;
 }

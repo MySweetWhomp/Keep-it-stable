@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T12:57:56+02:00
+* @Last modified time: 2016-04-17T13:44:56+02:00
 */
 
 window.addEventListener('load', function() {
@@ -155,6 +155,7 @@ window.addEventListener('load', function() {
 
             sock.on('startedplay', start);
             instructions.querySelector('img').setAttribute('src', '/static/assets/instructions000' + String(me.type.rules) + '.png');
+            instructions.querySelector('.instructionsme').setAttribute('src', '/static/assets/icons' + String(me.type.name) + '.gif');
             var startgame = function() {
                 instructions.style.display = 'none';
                 sock.emit('startplay');
