@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:09:21+02:00
+* @Last modified time: 2016-04-17T21:46:49+02:00
 */
 
 'use strict';
@@ -12,10 +12,11 @@ const UUIDGenerator = require('node-uuid');
 
 const MemberManager = require('./members');
 const logger = require('./logger');
+const utils = require('./utils');
 
 class Room {
-    constructor() {
-        this.UUID = UUIDGenerator.v1();
+    constructor(UUID) {
+        this.UUID = UUID || UUIDGenerator.v1();
         this.startedAt = Date.now();
 
         this.size = [6, 4];
@@ -146,6 +147,8 @@ class RoomManager {
     constructor() {
         logger.debug('RoomManager construction');
 
+        this.names = require('./names.json');
+
         // Dumb no database implementation
         this.rooms = { };
     }
@@ -155,7 +158,14 @@ class RoomManager {
     }
 
     create() {
-        let newRoom = new Room();
+        const createName = () => `${utils.getRandomItemFrom(this.names.nouns)}${utils.getRandomItemFrom(this.names.suffixes)}`;
+        let UUID = createName(),
+            i = 0;
+        while (Object.keys(this.rooms).indexOf(UUID) >= 0) {
+            UUID = createName();
+            if (++i > 100) { break; }
+        }
+        let newRoom = new Room(UUID);
 
         this.rooms[newRoom.UUID] = newRoom;
 
