@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T09:33:17+02:00
+* @Last modified time: 2016-04-17T10:41:53+02:00
 */
 
 'use strict';
@@ -18,11 +18,11 @@ class Room {
         this.UUID = UUID || UUIDGenerator.v1();
         this.startedAt = Date.now();
 
-        this.size = [7, 7];
+        this.size = [11, 7];
         this.map = '';
-        for (var i = 0; i < this.size[0]; ++i) {
+        for (var i = 0; i < this.size[1]; ++i) {
             let line = '';
-            for (var j = 0; j < this.size[1]; ++j) {
+            for (var j = 0; j < this.size[0]; ++j) {
                 line += '.';
             }
             this.map += `${line}\n`;
@@ -107,7 +107,7 @@ class Room {
     }
 
     logMap() {
-        // logger.debug(`\n${this.map}`);
+        logger.debug(`\n${this.map}`);
     }
 }
 

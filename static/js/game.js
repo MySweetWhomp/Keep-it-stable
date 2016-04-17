@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T10:06:39+02:00
+* @Last modified time: 2016-04-17T10:41:13+02:00
 */
 
 window.addEventListener('load', function() {
@@ -102,10 +102,10 @@ window.addEventListener('load', function() {
         cursor = document.querySelector('.cursor');
         map = document.querySelector('.map');
         map.style.width = String(squareSize * room.size[0] + 1) + 'px';
-        map.style.height = String(squareSize * room.size[0] + 1) + 'px';
+        map.style.height = String(squareSize * room.size[1] + 1) + 'px';
 
-        for (var i = 0; i < room.size[0]; ++i) {
-            for (var j = 0; j < room.size[1]; ++j) {
+        for (var i = 0; i < room.size[1]; ++i) {
+            for (var j = 0; j < room.size[0]; ++j) {
                 var square = document.createElement('div');
                 square.classList.add('square', 'free');
                 square.style.width = square.style.height = squareSize;
