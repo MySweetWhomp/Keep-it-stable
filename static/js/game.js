@@ -2,8 +2,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   paulloz
-* @Last modified time: 2016-04-16T21:50:39+02:00
+* @Last modified by:   Paul Joannon
+* @Last modified time: 2016-04-17T08:09:41+02:00
 */
 
 window.addEventListener('load', function() {
@@ -30,6 +30,9 @@ window.addEventListener('load', function() {
             }
         },
         getMember: function(UUID) {
+            if (UUID === me.UUID) {
+                return me;
+            }
             return room.members[utils.getMemberIndex(UUID)];
         },
         getMapCell: function(x, y) {
@@ -138,17 +141,25 @@ window.addEventListener('load', function() {
             sock.off('registered');
 
             room = data.room;
+            var meIndex = utils.getMemberIndex(me.UUID);
+            room.members = room.members.slice(0, meIndex).concat(room.members.slice(meIndex + 1, room.members.length));
             initMap();
+            me.picture = document.createElement('img');
+            me.picture.classList.add('character');
+            me.picture.setAttribute('src', utils.getAsset(me));
+            map.appendChild(me.picture);
 
             moveToRandom();
 
             sock.on('connected', function(newMember) {
-                if (newMember.UUID !== me.UUID && utils.getMember(newMember.UUID) == null) {
+                if (utils.getMember(newMember.UUID) == null) {
                     newMember.picture = document.createElement('img');
                     newMember.picture.classList.add('character');
                     newMember.picture.setAttribute('src', utils.getAsset(newMember));
                     map.appendChild(newMember.picture);
-                    room.members.push(newMember);
+                    if (newMember.UUID !== me.UUID) {
+                        room.members.push(newMember);
+                    }
                 }
             });
 
@@ -169,9 +180,6 @@ window.addEventListener('load', function() {
 
             sock.on('changedstate', function(data) {
                 var member = utils.getMember(data.member);
-                if (data.member === me.UUID) {
-                    me = member;
-                }
 
                 member.state = data.state;
                 member.picture.setAttribute('src', utils.getAsset(member));
@@ -216,7 +224,6 @@ window.addEventListener('load', function() {
             personWhoMoved.picture.style.left = (personWhoMoved.pos.x * squareSize) + (squareSize / 2);
 
             if (UUID === me.UUID) {
-                me = personWhoMoved;
                 cursor.style.top = me.picture.style.top;
                 cursor.style.left = me.picture.style.left;
             }
