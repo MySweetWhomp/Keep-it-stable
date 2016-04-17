@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T10:46:08+02:00
+* @Last modified time: 2016-04-17T11:56:43+02:00
 */
 
 html, body {
@@ -11,19 +11,27 @@ html, body {
     margin: 0;
 }
 
-.map, .square {
-    border-style: solid;
-    border-color: rgb(61, 61, 61);
+html {
+    background-color: rgb(224, 117, 132);
+    background-image: url(/static/assets/BG.gif);
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+}
 
+.map, .square {
     -webkit-box-sizing: border-box;
-            box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.game {
+    position: relative;
+
+    padding: 0 80px;
+    margin: -20px auto 0 auto;
 }
 
 .map {
     position: relative;
-
-    margin: 10px auto;
-    border-width: 1px 0 0 1px;
 
     background-color: rgb(122, 122, 122);
 }
@@ -31,9 +39,7 @@ html, body {
 .square {
     display: inline-block;
 
-    border-width: 0 1px 1px 0;
-
-    background-color: sand;
+    background-image: url(/static/assets/tiles0.gif);
 }
 
 .square {
@@ -125,4 +131,32 @@ html, body {
 
 .hud .icon.worldicon {
     right: 275px;
+}
+
+.game .left, .game .right {
+    position: absolute;
+    top: 80px;
+
+    width: 80px;
+}
+
+.game .left {
+    left: 0;
+
+    background-image: url(/static/assets/tilesleft.gif);
+}
+
+.game .right {
+    right: 1px;
+
+    background-image: url(/static/assets/tilesright.gif);
+}
+
+.game .bottom {
+    position: absolute;
+    left: 0;
+    bottom: -80px;
+
+    -webkit-pointer-events: none;
+            pointer-events: none;
 }

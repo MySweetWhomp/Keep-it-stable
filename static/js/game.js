@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T11:01:02+02:00
+* @Last modified time: 2016-04-17T11:48:32+02:00
 */
 
 window.addEventListener('load', function() {
@@ -103,6 +103,10 @@ window.addEventListener('load', function() {
         map = document.querySelector('.map');
         map.style.width = String(squareSize * room.size[0] + 1) + 'px';
         map.style.height = String(squareSize * room.size[1] + 1) + 'px';
+
+        map.parentNode.style.width = map.style.width;
+        map.parentNode.querySelector('.left').style.height = map.style.height;
+        map.parentNode.querySelector('.right').style.height = map.style.height;
 
         for (var i = 0; i < room.size[1]; ++i) {
             for (var j = 0; j < room.size[0]; ++j) {
@@ -223,7 +227,7 @@ window.addEventListener('load', function() {
         if (me.stateDirection !== newStateDirection) {
             me.stateDirection = newStateDirection;
             if (!isFirst) {
-                me.state = Math.min(100, Math.max(0, me.state + (scale * me.stateDirection)));
+                me.state = Math.min(100, Math.max(20, me.state + (scale * me.stateDirection)));
             }
         }
         gauge.me.style['width'] = String(me.state) + '%';
