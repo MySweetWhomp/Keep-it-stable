@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:18:11+02:00
+* @Last modified time: 2016-04-17T22:12:17+02:00
 */
 
 'use strict';
@@ -20,7 +20,7 @@ let roomManager = require('./src/rooms');
 app.get('/404', function(req, res) {
     // Oops, it seems that you're looking for something that doesn't exist.
     // Link to /
-    res.send('404');
+    res.redirect('/');
 });
 
 app.get('/', function(req, res) {
