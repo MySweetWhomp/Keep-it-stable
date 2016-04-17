@@ -8,6 +8,7 @@ block script
     script(type='text/javascript', src='/static/js/game.js')
 
 block content
+    div.gameover
     div.hud
         div.megauge
             img(src='/static/assets/jaugecadre.gif')
@@ -28,3 +29,6 @@ block content
             img(src='/static/assets/selectionsquare.gif').cursor
         div.right
         img.bottom(src='/static/assets/tilesdown.gif')
+    div.instructions
+        img(src='/static/assets/instructions0000.png')
+        img.instructionsme

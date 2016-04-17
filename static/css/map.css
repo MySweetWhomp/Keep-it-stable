@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T11:56:43+02:00
+* @Last modified time: 2016-04-17T12:54:20+02:00
 */
 
 html, body {
@@ -16,6 +16,10 @@ html {
     background-image: url(/static/assets/BG.gif);
     background-size: auto 100%;
     background-repeat: repeat-x;
+}
+
+.game, .hud {
+    display: none;
 }
 
 .map, .square {
@@ -56,7 +60,7 @@ html {
             pointer-events: none;
 }
 
-.map img.cursor {
+.map img.cursor, div.instructions {
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
 }
@@ -159,4 +163,31 @@ html {
 
     -webkit-pointer-events: none;
             pointer-events: none;
+}
+
+.gameover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+
+    background-color: rgb(82, 35, 118);
+    opacity: 0;
+
+    -webkit-pointer-events: none;
+            pointer-events: none;
+
+    -webkit-transition: opacity 2s ease-in;
+            transition: opacity 2s ease-in;
+}
+
+div.instructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 752px;
+    height: 264px;
 }

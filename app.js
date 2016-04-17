@@ -1,9 +1,10 @@
+
 /**
 * @Author: Paul Joannon
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T10:38:46+02:00
+* @Last modified time: 2016-04-17T12:50:54+02:00
 */
 
 'use strict';
@@ -88,13 +89,17 @@ app.listen(3000, function() {
                 member.sock = sock;
                 member.sock.emit('registered', {
                     me: member.getInfo(),
-                    room: {
-                        members: room.members.getAllInfo(),
-                        size: room.size
-                    }
                 });
 
-                room.members.emit('connected', member.getInfo());
+                member.sock.on('startplay', function() {
+                    member.sock.emit('startedplay', {
+                        room: {
+                            members: room.members.getAllInfo(),
+                            size: room.size
+                        }
+                    });
+                    room.members.emit('connected', member.getInfo());
+                });
 
                 member.sock.on('move', function(instruction) {
                     if (room.isCellFree(instruction.x, instruction.y)) {
@@ -110,6 +115,7 @@ app.listen(3000, function() {
                     member.stateDirection = data.stateDirection;
                     if (member.state <= 0) {
                         member.dead = true;
+                        member.sock.emit('gameover', { world: false });
                     }
                     room.updateScores(member.type.name);
                     room.members.emit('changedstate', { member: member.UUID, state: data.state });

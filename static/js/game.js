@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T11:48:32+02:00
+* @Last modified time: 2016-04-17T12:57:56+02:00
 */
 
 window.addEventListener('load', function() {
@@ -16,6 +16,7 @@ window.addEventListener('load', function() {
             crew: document.querySelector('.crewgauge .gauge'),
             world: document.querySelector('.worldgauge .gauge')
         },
+        instructions = document.querySelector('div.instructions'),
         me, room, map, room;
 
     window.addEventListener('beforeunload', function(){
@@ -152,72 +153,97 @@ window.addEventListener('load', function() {
 
             sock.off('registered');
 
-            room = data.room;
-            var meIndex = utils.getMemberIndex(me.UUID);
-            room.members = room.members.slice(0, meIndex).concat(room.members.slice(meIndex + 1, room.members.length));
-            initMap();
-            me.picture = document.createElement('img');
-            me.picture.classList.add('character');
-            me.picture.setAttribute('src', utils.getAsset(me));
-            map.appendChild(me.picture);
-
-            moveToRandom();
-
-            sock.on('connected', function(newMember) {
-                if (utils.getMember(newMember.UUID) == null) {
-                    newMember.picture = document.createElement('img');
-                    newMember.picture.classList.add('character');
-                    newMember.picture.setAttribute('src', utils.getAsset(newMember));
-                    map.appendChild(newMember.picture);
-                    if (newMember.UUID !== me.UUID) {
-                        room.members.push(newMember);
-                    }
-                }
-            });
-
-            sock.on('disconnected', function(oldMember) {
-                var oldMemberIndex = utils.getMemberIndex(oldMember);
-                oldMember = room.members[oldMemberIndex];
-                if (!oldMember.dead && oldMember.state > 0) {
-                    map.removeChild(oldMember.picture);
-                    utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
-                    room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
-                }
-                updateState();
-            });
-
-            sock.on('moved', function(data) {
-                onmoved(data.member, data.instruction);
-            });
-
-            sock.on('changedstate', function(data) {
-                var member = utils.getMember(data.member);
-
-                member.state = data.state;
-                member.picture.setAttribute('src', utils.getAsset(member));
-            });
-
-            sock.on('updatedgauge', function(data) {
-                if (data.crew != null) {
-                    gauge.crew.style.width = String(data.score) + '%';
-                } else {
-                    gauge.world.style.width = String(data.score) + '%';
-                }
-            });
-
-            var step = 5;
-            function theStateUpdate() {
-                var cat = parseInt(me.state / scale);
-                me.state = Math.min(100, Math.max(0, me.state + (step * me.stateDirection)));
-                if (parseInt(me.state / scale) !== cat || (me.state === 0 && !me.dead)) {
-                    updateState();
-                }
-                gauge.me.style['width'] = String(me.state) + '%';
-                if (!me.dead && me.state > 0) {
-                    setTimeout(theStateUpdate, 1000);
-                }
+            sock.on('startedplay', start);
+            instructions.querySelector('img').setAttribute('src', '/static/assets/instructions000' + String(me.type.rules) + '.png');
+            var startgame = function() {
+                instructions.style.display = 'none';
+                sock.emit('startplay');
             };
-            setTimeout(theStateUpdate, 1000);
+            document.body.addEventListener('click', startgame);
+            document.body.addEventListener('touchend', startgame);
+
+            function start(data) {
+                sock.off('startedplay');
+                document.querySelector('.game').style.display = document.querySelector('.hud').style.display = 'block';
+
+                room = data.room;
+                var meIndex = utils.getMemberIndex(me.UUID);
+                room.members = room.members.slice(0, meIndex).concat(room.members.slice(meIndex + 1, room.members.length));
+                initMap();
+                me.picture = document.createElement('img');
+                me.picture.classList.add('character');
+                me.picture.setAttribute('src', utils.getAsset(me));
+                map.appendChild(me.picture);
+
+                moveToRandom();
+
+                sock.on('connected', function(newMember) {
+                    if (utils.getMember(newMember.UUID) == null) {
+                        newMember.picture = document.createElement('img');
+                        newMember.picture.classList.add('character');
+                        newMember.picture.setAttribute('src', utils.getAsset(newMember));
+                        map.appendChild(newMember.picture);
+                        if (newMember.UUID !== me.UUID) {
+                            room.members.push(newMember);
+                        }
+                    }
+                });
+
+                sock.on('disconnected', function(oldMember) {
+                    var oldMemberIndex = utils.getMemberIndex(oldMember);
+                    oldMember = room.members[oldMemberIndex];
+                    if (!oldMember.dead && oldMember.state > 0) {
+                        map.removeChild(oldMember.picture);
+                        utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
+                        room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
+                    }
+                    updateState();
+                });
+
+                sock.on('moved', function(data) {
+                    onmoved(data.member, data.instruction);
+                });
+
+                sock.on('changedstate', function(data) {
+                    var member = utils.getMember(data.member);
+
+                    member.state = data.state;
+                    member.picture.setAttribute('src', utils.getAsset(member));
+                });
+
+                sock.on('updatedgauge', function(data) {
+                    if (data.crew != null) {
+                        gauge.crew.style.width = String(data.score) + '%';
+                    } else {
+                        gauge.world.style.width = String(data.score) + '%';
+                    }
+                });
+
+                sock.on('gameover', function(data) {
+                    if (data.world) {
+                    } else {
+                    }
+
+                    document.querySelector('.gameover').style.opacity = 1;
+                    setTimeout(function() {
+                        sock.disconnect();
+                    }, 3000);
+                });
+
+                var step = 5;
+                function theStateUpdate() {
+                    var cat = parseInt(me.state / scale);
+                    me.state = Math.min(100, Math.max(0, me.state + (step * me.stateDirection)));
+                    if (parseInt(me.state / scale) !== cat || (me.state === 0 && !me.dead)) {
+                        updateState();
+                    }
+                    gauge.me.style['width'] = String(me.state) + '%';
+                    if (!me.dead && me.state > 0) {
+                        setTimeout(theStateUpdate, 1000);
+                    }
+                };
+                setTimeout(theStateUpdate, 1000);
+            }
         });
     }
 
