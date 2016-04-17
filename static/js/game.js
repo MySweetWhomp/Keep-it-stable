@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T15:54:46+02:00
+* @Last modified time: 2016-04-17T16:30:21+02:00
 */
 
 window.addEventListener('load', function() {
@@ -22,7 +22,7 @@ window.addEventListener('load', function() {
                 loop: true
             })
         },
-        musicFadeTiming = 2000,
+        musicFadeTiming = 200,
         currentMusic,
         roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
         save = JSON.parse(window.localStorage.getItem('savedGame')),
@@ -89,9 +89,7 @@ window.addEventListener('load', function() {
             var score = 0;
             for (var i = 0; i < input.length; ++i) {
                 score += input[i].type.name === me.type.name ? 1 : -1;
-                console.debug(input[i].type.name, me.type.name, input)
             }
-            console.debug('here', score);
             return score / (Math.abs(score) || 1);
         },
         function(input) {
@@ -162,6 +160,16 @@ window.addEventListener('load', function() {
         }
     };
 
+    function changeMusic(oldMusic, force) {
+        if (oldMusic) {
+            musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
+                musics[oldMusic].stop();
+            });
+        }
+        musics[currentMusic].play();
+        musics[currentMusic].fade(0, 1, musicFadeTiming);
+    }
+
     function register(myUUID) {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
@@ -179,7 +187,6 @@ window.addEventListener('load', function() {
             instructions.querySelector('img').setAttribute('src', '/static/assets/instructions000' + String(me.type.rules) + '.png');
             instructions.querySelector('.instructionsme').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
             if (me.type.rules === 1 && me.type.antagonist != null) {
-                console.debug(me.type.antagonist);
                 var antagonist = document.createElement('img');
                 antagonist.classList.add('instructionsantagonist');
                 antagonist.setAttribute('src', '/static/assets/icons' + me.type.antagonist + '.gif');
@@ -246,32 +253,10 @@ window.addEventListener('load', function() {
                         gauge.crew.style.width = String(data.score) + '%';
                     } else {
                         gauge.world.style.width = String(data.score) + '%';
-
-                        var oldMusic = currentMusic;
-
-                        if (data.score < 40 && currentMusic !== 'slow') {
-                            currentMusic = 'slow';
-                        } else if (data.score >= 40 && data.score < 70) {
-                            currentMusic = 'neutral';
-                        } else {
-                            currentMusic = 'rapid';
-                        }
-
-                        if (oldMusic !== currentMusic) {
-                            changeMusic(oldMusic);
-                        }
                     }
                 });
 
-                function changeMusic(oldMusic) {
-                    if (oldMusic) {
-                        musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
-                            musics[oldMusic].stop();
-                        });
-                    }
-                    musics[currentMusic].play();
-                    musics[currentMusic].fade(0, 1, musicFadeTiming);
-                }
+                var timer;
 
                 sock.on('gameover', function(data) {
                     if (data.world) {
@@ -288,7 +273,9 @@ window.addEventListener('load', function() {
 
                     var oldMusic = currentMusic;
                     currentMusic = 'slow';
-                    changeMusic(oldMusic);
+                    changeMusic(oldMusic, true);
+
+                    clearTimeout(timer);
                 });
 
                 var step = 5;
@@ -300,10 +287,10 @@ window.addEventListener('load', function() {
                     }
                     gauge.me.style['width'] = String(me.state) + '%';
                     if (!me.dead && me.state > 0) {
-                        setTimeout(theStateUpdate, 1000);
+                        timer = setTimeout(theStateUpdate, 1000);
                     }
                 };
-                setTimeout(theStateUpdate, 1000);
+                timer = setTimeout(theStateUpdate, 1000);
             }
         });
     }
@@ -320,6 +307,18 @@ window.addEventListener('load', function() {
         gauge.me.style['width'] = String(me.state) + '%';
         changeState(me.state, me.stateDirection);
         isFirst = false;
+
+        var oldMusic = currentMusic;
+        if (me.state < 20) {
+            currentMusic = 'slow';
+        } else if (me.state >= 20 && me.state < 80) {
+            currentMusic = 'neutral';
+        } else {
+            currentMusic = 'rapid';
+        }
+        if (oldMusic !== currentMusic) {
+            changeMusic(oldMusic);
+        }
     }
 
     function onmoved(UUID, newPos, skipStateComputation) {

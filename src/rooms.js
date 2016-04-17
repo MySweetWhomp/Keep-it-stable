@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T15:34:52+02:00
+* @Last modified time: 2016-04-17T16:27:46+02:00
 */
 
 'use strict';
@@ -67,6 +67,8 @@ class Room {
 
         logger.debug(`Room construction, UUID is ${this.UUID}`);
         this.logMap();
+
+        this.lastupdatescore = null;
     }
 
     connect(userUUID) {
@@ -100,26 +102,33 @@ class Room {
     updateScores(crew) {
         let members = this.members.getAll();
         let n = { yellow: 0, green: 0, red: 0, purple: 0 };
-        this.crews[crew] = 0;
+        this.crews['yellow'] = 0;
+        this.crews['green'] = 0;
+        this.crews['red'] = 0;
+        this.crews['purple'] = 0;
         for (var i = 0; i < members.length; ++i) {
-            if ((members[i].sock != null || members[i].dead)) {
+            if (members[i].sock != null || members[i].dead || members[i].state <= 0) {
                 ++n[members[i].type.name];
-                if (members[i].type.name === crew) {
-                    this.crews[crew] += members[i].state;
-                }
+                this.crews[members[i].type.name] += members[i].state;
             }
         }
         this.crews[crew] /= n[crew];
         this.members.emit('updatedgauge', { score: this.crews[crew], crew: crew }, crew);
 
-        this.world = this.crews['yellow'] + this.crews['green'] + this.crews['red'] + this.crews['purple'];
-        var divisor = 0;
-        if (n['yellow'] > 0) { divisor += 1; }
-        if (n['green'] > 0) { divisor += 1; }
-        if (n['red'] > 0) { divisor += 1; }
-        if (n['purple'] > 0) { divisor += 1; }
-        this.world /= divisor;
-        this.members.emit('updatedgauge', { score: this.world });
+        var now = Date.now();
+        if (this.lastupdatescore == null || now - this.lastupdatescore > 500) {
+            this.world = this.crews['yellow'] + this.crews['green'] + this.crews['red'] + this.crews['purple'];
+            var divisor = 0;
+            if (n['yellow'] > 0) { divisor += 1; }
+            if (n['green'] > 0) { divisor += 1; }
+            if (n['red'] > 0) { divisor += 1; }
+            if (n['purple'] > 0) { divisor += 1; }
+            this.world /= divisor;
+            this.members.emit('updatedgauge', { score: this.world });
+            this.lastupdatescore = now;
+        }
+
+        logger.debug(this.world, divisor, this.crews, n)
 
         if (this.world < 20) {
             this.members.emit('gameover', { world: true });
