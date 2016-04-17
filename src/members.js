@@ -3,8 +3,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T11:00:27+02:00
+* @Last modified by:   Paul Joannon
+* @Last modified time: 2016-04-17T21:17:32+02:00
 */
 
 'use strict';
@@ -117,6 +117,16 @@ class MemberManager {
                 }
             }
         }
+    }
+
+    countActives() {
+        let n = 0;
+        for (let i = 0; i < this.members.length; ++i) {
+            if (this.members[i].sock != null) {
+                ++n;
+            }
+        }
+        return n;
     }
 }
 

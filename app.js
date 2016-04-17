@@ -3,8 +3,8 @@
 * @Author: Paul Joannon
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T14:02:50+02:00
+* @Last modified by:   Paul Joannon
+* @Last modified time: 2016-04-17T21:18:11+02:00
 */
 
 'use strict';
@@ -128,6 +128,11 @@ app.listen(3000, function() {
                     room.members.emit('disconnected', member.UUID);
 
                     member.disconnect();
+                    setTimeout(function() {
+                        if (room.members.countActives() <= 0) {
+                            roomManager.remove(room.UUID);
+                        }
+                    }, 5000);
                 });
             }
         });
