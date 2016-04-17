@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T16:37:05+02:00
+* @Last modified time: 2016-04-17T17:00:04+02:00
 */
 
 window.addEventListener('load', function() {
@@ -34,6 +34,16 @@ window.addEventListener('load', function() {
         },
         instructions = document.querySelector('div.instructions'),
         me, room, map, room;
+
+    document.body.addEventListener('click', function() {
+        instructions.style.display = 'none';
+    });
+
+    document.querySelector('.info').addEventListener('click', function() {
+        setTimeout(function() {
+            instructions.style.display = 'block';
+        }, 100);
+    });
 
     window.addEventListener('beforeunload', function(){
         sock.close();
@@ -88,14 +98,14 @@ window.addEventListener('load', function() {
         function(input) {
             var score = 0;
             for (var i = 0; i < input.length; ++i) {
-                score += input[i].type.name === me.type.name ? 1 : -1;
+                score += input[i].type.name === me.type.name ? 1 : -2;
             }
             return score / (Math.abs(score) || 1);
         },
         function(input) {
             var score = 0;
             for (var i = 0; i < input.length; ++i) {
-                score += input[i].type.name === me.type.antagonist ? -1 : 1;
+                score += input[i].type.name === me.type.antagonist ? -2 : 1;
             }
             return score / (Math.abs(score) || 1);
         },
