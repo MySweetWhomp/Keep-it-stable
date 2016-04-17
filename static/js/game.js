@@ -3,11 +3,23 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T13:53:04+02:00
+* @Last modified time: 2016-04-17T14:14:58+02:00
 */
 
 window.addEventListener('load', function() {
     var sock = io('http://' + window.location.hostname + ':3001'),
+        musics = {
+            slow: new Howl({
+                urls: ['/static/assets/slow.mp3'],
+                loop: true
+            }),
+            neutral: new Howl({
+                urls: ['/static/assets/neutral.mp3'],
+                loop: true
+            })
+        },
+        musicFadeTiming = 4000,
+        currentMusic,
         roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
         save = JSON.parse(window.localStorage.getItem('savedGame')),
         squareSize = 80,
@@ -143,6 +155,10 @@ window.addEventListener('load', function() {
     function register(myUUID) {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
+            currentMusic = 'neutral';
+            musics[currentMusic].play();
+            musics[currentMusic].fade(0, 1, musicFadeTiming);
+
             me = data.me;
 
             document.querySelector('.meicon').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
@@ -217,6 +233,22 @@ window.addEventListener('load', function() {
                         gauge.crew.style.width = String(data.score) + '%';
                     } else {
                         gauge.world.style.width = String(data.score) + '%';
+
+                        var oldMusic = currentMusic;
+
+                        if (data.score < 40 && currentMusic !== 'slow') {
+                            currentMusic = 'slow';
+                        } else if (data.score >= 40 && data.score < 70) {
+                            currentMusic = 'neutral';
+                        }
+
+                        if (oldMusic !== currentMusic) {
+                            musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
+                                musics[oldMusic].stop();
+                            });
+                            musics[currentMusic].play();
+                            musics[currentMusic].fade(0, 1, musicFadeTiming);
+                        }
                     }
                 });
 

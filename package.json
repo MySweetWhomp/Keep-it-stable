@@ -17,6 +17,7 @@
   "homepage": "https://github.com/MySweetWhomp/diversityjam#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "howler": "^1.1.29",
     "less-middleware": "^2.1.0",
     "node-uuid": "^1.4.7",
     "pug": "^2.0.0-alpha3",
