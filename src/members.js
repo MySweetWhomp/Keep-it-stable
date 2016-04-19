@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:39:04+02:00
+* @Last modified time: 2016-04-19T20:03:55+02:00
 */
 
 'use strict';
@@ -112,14 +112,18 @@ class MemberManager {
         }
     }
 
-    countActives() {
+    count(disconnected, dead) {
         let n = 0;
         for (let i = 0; i < this.members.length; ++i) {
-            if (this.members[i].sock != null) {
+            if (this.members[i].sock != null || disconnected || (dead && this.members[i].dead)) {
                 ++n;
             }
         }
         return n;
+    }
+
+    countActives() {
+        return this.count(false, false);
     }
 }
 

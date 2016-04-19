@@ -3,6 +3,9 @@ extends ./base.pug
 block title
     title Keep it stable
 
+block script
+    script(type='text/javascript', src="/static/js/datetime.js")
+
 block style
     link(type='text/css', rel='stylesheet', href='/static/css/index.css')
 
@@ -14,7 +17,7 @@ block content
                 if room
                     li
                         a(href='r/' + room.UUID)= room.UUID
-                        |  (#{Object.keys(room.members).length - 2} person, up since 
+                        |  (#{room.members.count(false, true)} person, up since 
                         span.time(x-attr-since=room.startedAt)
                         | )
         form(method='post', action='/r')
