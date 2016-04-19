@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:26:39+02:00
+* @Last modified time: 2016-04-19T20:39:15+02:00
 */
 
 'use strict';
@@ -76,6 +76,7 @@ app.listen(3000, function() {
                     logger.debug(`Ask register for ${data.roomUUID}`);
                     if (room.members.count(false, true) > (room.size[0] * room.size[1]) / 2) {
                         room.grow();
+                        logger.info(`${room.UUID} must grow!`);
                     }
                     return room.registerMember();
                 };
