@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T22:12:01+02:00
+* @Last modified time: 2016-04-19T22:19:26+02:00
 */
 
 window.addEventListener('load', function() {
@@ -361,8 +361,19 @@ window.addEventListener('load', function() {
         var newStateDirection = computeScore[me.type.rules](utils.getAdjacentMembers());
         if (me.stateDirection !== newStateDirection) {
             me.stateDirection = newStateDirection;
+
             me.feedback.classList.remove('p1', 'm1');
-            me.feedback.classList.add(me.stateDirection !== 0 ? (me.stateDirection > 0 ? 'p1' : 'm1') : '');
+            gauge.me.classList.remove('p1', 'm1');
+            if (me.stateDirection !== 0) {
+                if (me.stateDirection > 0) {
+                    me.feedback.classList.add('p1');
+                    gauge.me.classList.add('p1');
+                } else {
+                    me.feedback.classList.add('m1');
+                    gauge.me.classList.add('m1');
+                }
+            }
+
             if (!isFirst) {
                 me.state = Math.min(100, Math.max(20, me.state + (scale * me.stateDirection)));
             }
