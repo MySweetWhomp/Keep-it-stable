@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T21:41:30+02:00
+* @Last modified time: 2016-04-19T22:12:01+02:00
 */
 
 window.addEventListener('load', function() {
@@ -66,7 +66,7 @@ window.addEventListener('load', function() {
     });
 
     var scale = 20,
-        scaleAssets = ['tomb', 'verysad', 'sad', 'neutral', 'happy', 'veryhappy', 'veryhappy'];
+        scaleAssets = ['eliminated', 'verysad', 'sad', 'neutral', 'happy', 'veryhappy', 'veryhappy'];
 
     var utils = {
         getRandomInt: function(min, max) { return Math.floor(Math.random() * (max - min)) + min; },
@@ -250,6 +250,11 @@ window.addEventListener('load', function() {
                 me.picture.classList.add('character');
                 me.picture.setAttribute('src', utils.getAsset(me));
                 map.appendChild(me.picture);
+                me.feedback = document.createElement('div');
+                me.feedback.classList.add('feedback');
+                me.feedback.picture = document.createElement('div');
+                me.feedback.appendChild(me.feedback.picture);
+                map.appendChild(me.feedback);
 
                 moveToRandom();
 
@@ -356,6 +361,8 @@ window.addEventListener('load', function() {
         var newStateDirection = computeScore[me.type.rules](utils.getAdjacentMembers());
         if (me.stateDirection !== newStateDirection) {
             me.stateDirection = newStateDirection;
+            me.feedback.classList.remove('p1', 'm1');
+            me.feedback.classList.add(me.stateDirection !== 0 ? (me.stateDirection > 0 ? 'p1' : 'm1') : '');
             if (!isFirst) {
                 me.state = Math.min(100, Math.max(20, me.state + (scale * me.stateDirection)));
             }
@@ -391,7 +398,8 @@ window.addEventListener('load', function() {
 
             if (UUID === me.UUID) {
                 cursor.style.top = me.picture.style.top;
-                cursor.style.left = me.picture.style.left;
+                cursor.style.left = me.feedback.style.left = me.picture.style.left;
+                me.feedback.style.top = parseInt(me.picture.style.top) - (squareSize * 0.75);
             }
 
             if (!skipStateComputation) {
@@ -399,6 +407,10 @@ window.addEventListener('load', function() {
                 updateState();
             }
         }
+    }
+
+    function feedback() {
+
     }
 
     function move(x, y) {

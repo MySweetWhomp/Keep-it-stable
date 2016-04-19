@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T21:32:34+02:00
+* @Last modified time: 2016-04-19T22:14:11+02:00
 */
 
 .game, .hud {
@@ -25,6 +25,10 @@
 
 .character {
     z-index: 20;
+}
+
+.feedback {
+    z-index: 30;
 }
 
 .map {
@@ -51,7 +55,7 @@
 .square-8 { background-image: url(/static/assets/tiles8.gif); }
 .square-9 { background-image: url(/static/assets/tiles9.gif); }
 
-.map img {
+.map .character, .map .cursor, .map .feedback {
     position: absolute;
 
     -webkit-transform: translate(-50%, -75%);
@@ -59,6 +63,67 @@
 
     -webkit-pointer-events: none;
             pointer-events: none;
+}
+
+.map .feedback, .map .feedback div {
+    width: 18px;
+    height: 14px;
+}
+
+@keyframes feedbackanim {
+    from { top: 0; opacity: 1; }
+    to { top: -150%; opacity: 0; }
+}
+@keyframes feedbackanim_p1 {
+    from {
+        left: 10%;
+        -webkit-transform: rotateZ(0deg);
+                transform: rotateZ(0deg);
+    }
+    to {
+        left: 50%;
+        -webkit-transform: rotate(15deg);
+                transform: rotate(15deg);
+    }
+}
+@keyframes feedbackanim_m1 {
+    from {
+        left: 0;
+        -webkit-transform: rotateZ(0deg);
+                transform: rotateZ(0deg);
+    }
+    to {
+        left: -30%;
+        -webkit-transform: rotate(-15deg);
+                transform: rotate(-15deg);
+    }
+}
+
+.map .feedback div {
+    position: absolute;
+
+    display: none;
+
+    -webkit-animation: none;
+            animation: none;
+}
+
+.map .feedback.p1 div {
+    display: block;
+
+    background-image: url('/static/assets/feedback+1.gif');
+
+    -webkit-animation: feedbackanim 750ms infinite, feedbackanim_p1 750ms infinite;
+            animation: feedbackanim 750ms infinite, feedbackanim_p1 750ms infinite;
+}
+
+.map .feedback.m1 div {
+    display: block;
+
+    background-image: url('/static/assets/feedback-1.gif');
+
+    -webkit-animation: feedbackanim 750ms infinite, feedbackanim_m1 750ms infinite;
+            animation: feedbackanim 750ms infinite, feedbackanim_m1 750ms infinite;
 }
 
 .map img.cursor, div.instructions {
