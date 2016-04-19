@@ -23,6 +23,10 @@
     margin: -20px auto 0 auto;
 }
 
+.character {
+    z-index: 20;
+}
+
 .map {
     position: relative;
 
@@ -33,9 +37,7 @@
     display: inline-block;
 
     background-image: url(/static/assets/tiles0.gif);
-}
 
-.square {
     cursor: pointer;
 }
 
