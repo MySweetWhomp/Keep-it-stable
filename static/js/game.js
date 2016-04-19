@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-20T00:51:23+02:00
+* @Last modified time: 2016-04-20T00:57:41+02:00
 */
 
 window.addEventListener('load', function() {
@@ -428,10 +428,13 @@ window.addEventListener('load', function() {
 
     }
 
-    function move(x, y) {
+    function move(x, y, onnomoved) {
         sock.emit('move', { x: x, y: y });
         sock.on('nomoved', function() {
             sock.off('nomoved');
+            if (onnomoved != null) {
+                onnomoved();
+            }
         });
     }
 
@@ -444,7 +447,7 @@ window.addEventListener('load', function() {
                 ok = true;
             }
         }
-        move(x, y);
+        move(x, y, moveToRandom);
     }
 
     function changeState(newState, newStateDirection) {
