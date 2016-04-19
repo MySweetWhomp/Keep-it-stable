@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T22:29:12+02:00
+* @Last modified time: 2016-04-19T22:39:39+02:00
 */
 
 .game, .hud {
@@ -71,38 +71,15 @@
 }
 
 @keyframes feedbackanim {
-    from { top: 0; opacity: 1; }
-    to { top: -150%; opacity: 0; }
-}
-@keyframes feedbackanim_p1 {
-    from {
-        left: 10%;
-        -webkit-transform: rotateZ(0deg);
-                transform: rotateZ(0deg);
-    }
-    to {
-        left: 50%;
-        -webkit-transform: rotate(15deg);
-                transform: rotate(15deg);
-    }
-}
-@keyframes feedbackanim_m1 {
-    from {
-        left: 0;
-        -webkit-transform: rotateZ(0deg);
-                transform: rotateZ(0deg);
-    }
-    to {
-        left: -30%;
-        -webkit-transform: rotate(-15deg);
-                transform: rotate(-15deg);
-    }
+    from { top: -80%; opacity: 1; }
+    to { top: -190%; opacity: 0; }
 }
 
 .map .feedback div {
-    position: absolute;
-
     display: none;
+
+    position: absolute;
+    left: 15%;
 
     -webkit-animation: none;
             animation: none;
@@ -113,8 +90,8 @@
 
     background-image: url('/static/assets/feedback+1.gif');
 
-    -webkit-animation: feedbackanim 1s infinite, feedbackanim_p1 1s infinite;
-            animation: feedbackanim 1s infinite, feedbackanim_p1 1s infinite;
+    -webkit-animation: feedbackanim 1s infinite;
+            animation: feedbackanim 1s infinite;
 }
 
 .map .feedback.m1 div {
@@ -122,8 +99,8 @@
 
     background-image: url('/static/assets/feedback-1.gif');
 
-    -webkit-animation: feedbackanim 1s infinite, feedbackanim_m1 1s infinite;
-            animation: feedbackanim 1s infinite, feedbackanim_m1 1s infinite;
+    -webkit-animation: feedbackanim 1s infinite;
+            animation: feedbackanim 1s infinite;
 }
 
 .map img.cursor, div.instructions {
