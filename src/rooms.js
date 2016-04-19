@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T19:59:01+02:00
+* @Last modified time: 2016-04-19T22:22:50+02:00
 */
 
 'use strict';
@@ -18,6 +18,8 @@ class Room {
     constructor(UUID) {
         this.UUID = UUID || UUIDGenerator.v1();
         this.startedAt = Date.now();
+
+        this.societyDownLimit = 25;
 
         this.size = [6, 1];
         this.map = '';
@@ -132,7 +134,7 @@ class Room {
             this.lastupdatescore = now;
         }
 
-        if (this.world < 20) {
+        if (this.world < this.societyDownLimit) {
             this.members.emit('gameover', { world: true });
             module.exports.remove(this.UUID);
         }
