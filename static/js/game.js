@@ -2,8 +2,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   paulloz
-* @Last modified time: 2016-04-17T17:00:04+02:00
+* @Last modified by:   Paul Joannon
+* @Last modified time: 2016-04-19T20:31:43+02:00
 */
 
 window.addEventListener('load', function() {
@@ -33,7 +33,7 @@ window.addEventListener('load', function() {
             world: document.querySelector('.worldgauge .gauge')
         },
         instructions = document.querySelector('div.instructions'),
-        me, room, map, room;
+        me, room, map;
 
         roomUUID = window.location.href.match(/\/([-\w]+)$/);
         if (roomUUID != null) {
@@ -139,6 +139,24 @@ window.addEventListener('load', function() {
         register(save.myUUID);
     }
 
+    function createSquare(map, i, j) {
+        var square = document.createElement('div');
+        square.classList.add('square', 'free');
+        square.style.width = square.style.height = squareSize;
+        map.appendChild(square);
+
+        var onclick = (function(i, j, square) {
+            return function() {
+                if (square.classList.contains('free') && !me.dead && me.state > 0) {
+                    move(j, i);
+                    sounds.plop.play();
+                }
+            };
+        })(i, j, square);
+        square.addEventListener('click', onclick);
+        square.addEventListener('touchEnd', onclick);
+    }
+
     function initMap() {
         cursor = document.querySelector('.cursor');
         map = document.querySelector('.map');
@@ -151,20 +169,7 @@ window.addEventListener('load', function() {
 
         for (var i = 0; i < room.size[1]; ++i) {
             for (var j = 0; j < room.size[0]; ++j) {
-                var square = document.createElement('div');
-                square.classList.add('square', 'free');
-                square.style.width = square.style.height = squareSize;
-                map.appendChild(square);
-
-                var onclick = (function(i, j, square) {
-                    return function() {
-                        if (square.classList.contains('free') && !me.dead && me.state > 0) {
-                            move(j, i);
-                        }
-                    };
-                })(i, j, square);
-                square.addEventListener('click', onclick);
-                square.addEventListener('touchEnd', onclick);
+                createSquare(map, i, j);
             }
         }
 
@@ -285,7 +290,7 @@ window.addEventListener('load', function() {
                         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverunhappy.png)';
                     }
 
-                    document.querySelector('.game').style.display = 'none';
+                    document.querySelector('.game').style.display = document.querySelector('.hud').style.display = document.querySelector('.info').style.display = document.querySelector('.instructions').style.display = 'none';
                     document.querySelector('.gameover').classList.remove('hidden');
                     setTimeout(function() {
                         sock.disconnect();
@@ -296,6 +301,19 @@ window.addEventListener('load', function() {
                     changeMusic(oldMusic, true);
 
                     clearTimeout(timer);
+                });
+
+                sock.on('grow', function() {
+                    ++room.size[1];
+
+                    let map = document.querySelector('.map');
+
+                    for (var i = 0; i < room.size[0]; ++i) {
+                        createSquare(map, room.size[1] - 1, i);
+                    }
+                    map.style.height = String(squareSize * room.size[1] + 1) + 'px';
+                    map.parentNode.querySelector('.left').style.height = map.style.height;
+                    map.parentNode.querySelector('.right').style.height = map.style.height;
                 });
 
                 var step = 5;
