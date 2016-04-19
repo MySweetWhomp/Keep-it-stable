@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T22:14:11+02:00
+* @Last modified time: 2016-04-19T22:16:51+02:00
 */
 
 .game, .hud {
@@ -113,8 +113,8 @@
 
     background-image: url('/static/assets/feedback+1.gif');
 
-    -webkit-animation: feedbackanim 750ms infinite, feedbackanim_p1 750ms infinite;
-            animation: feedbackanim 750ms infinite, feedbackanim_p1 750ms infinite;
+    -webkit-animation: feedbackanim 1s infinite, feedbackanim_p1 1s infinite;
+            animation: feedbackanim 1s infinite, feedbackanim_p1 1s infinite;
 }
 
 .map .feedback.m1 div {
@@ -122,8 +122,8 @@
 
     background-image: url('/static/assets/feedback-1.gif');
 
-    -webkit-animation: feedbackanim 750ms infinite, feedbackanim_m1 750ms infinite;
-            animation: feedbackanim 750ms infinite, feedbackanim_m1 750ms infinite;
+    -webkit-animation: feedbackanim 1s infinite, feedbackanim_m1 1s infinite;
+            animation: feedbackanim 1s infinite, feedbackanim_m1 1s infinite;
 }
 
 .map img.cursor, div.instructions {
