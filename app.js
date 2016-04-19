@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T22:12:17+02:00
+* @Last modified time: 2016-04-19T19:47:03+02:00
 */
 
 'use strict';
@@ -26,7 +26,7 @@ app.get('/404', function(req, res) {
 app.get('/', function(req, res) {
     // List rooms w/ uptime and population
     // User can join a room or create a new one
-    res.render('index', { rooms: roomManager.getAll() });
+    res.render('index', { rooms: roomManager.getAll(), now: Date.now() });
 });
 
 app.post('/r', function(req, res) {

@@ -3,12 +3,13 @@
 * @Date:   2016-04-16T09:46:07+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-18T21:55:14+02:00
+* @Last modified time: 2016-04-19T19:48:56+02:00
 */
 
 window.addEventListener('load', function() {
+    var now = parseInt(document.querySelector('.content').getAttribute('x-attr-page-loaded'));
+
     function update() {
-        var now = Date.now();
         [].slice.call(document.querySelectorAll('.time[x-attr-since]')).forEach(function(element) {
             var timeDiff = (now - parseInt(element.getAttribute('x-attr-since'))) / 1000;
             if (timeDiff / 60 > 1) {
@@ -18,6 +19,7 @@ window.addEventListener('load', function() {
             }
         });
 
+        now += 1000;
         setTimeout(update, 1000);
     }
 

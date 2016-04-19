@@ -7,15 +7,16 @@ block style
     link(type='text/css', rel='stylesheet', href='/static/css/index.css')
 
 block content
-    div.content
+    div.content(x-attr-page-loaded=now)
         img(src='/static/assets/title.png')
         ul
             each room in rooms
                 if room
                     li
                         a(href='r/' + room.UUID)= room.UUID
-                        | , Up since 
+                        |  (#{Object.keys(room.members).length - 2} person, up since 
                         span.time(x-attr-since=room.startedAt)
+                        | )
         form(method='post', action='/r')
             button(type='submit') Create new room
         p
