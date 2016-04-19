@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T22:35:27+02:00
+* @Last modified time: 2016-04-20T00:51:23+02:00
 */
 
 window.addEventListener('load', function() {
@@ -419,6 +419,8 @@ window.addEventListener('load', function() {
                 // Update state
                 updateState();
             }
+
+            personWhoMoved.picture.style.display = 'block';
         }
     }
 
