@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:31:43+02:00
+* @Last modified time: 2016-04-19T20:39:39+02:00
 */
 
 window.addEventListener('load', function() {
@@ -312,7 +312,7 @@ window.addEventListener('load', function() {
                 sock.on('grow', function() {
                     ++room.size[1];
 
-                    let map = document.querySelector('.map');
+                    var map = document.querySelector('.map');
 
                     for (var i = 0; i < room.size[0]; ++i) {
                         createSquare(map, room.size[1] - 1, i);
