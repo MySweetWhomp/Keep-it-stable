@@ -24,7 +24,7 @@ window.addEventListener('load', function() {
         },
         musicFadeTiming = 200,
         currentMusic,
-        roomUUID = window.location.href.match(/\/([-\w]+)$/)[1],
+        roomUUID,
         save = JSON.parse(window.localStorage.getItem('savedGame')),
         squareSize = 80,
         gauge = {
@@ -34,6 +34,16 @@ window.addEventListener('load', function() {
         },
         instructions = document.querySelector('div.instructions'),
         me, room, map, room;
+
+        roomUUID = window.location.href.match(/\/([-\w]+)$/);
+        if (roomUUID != null) {
+            roomUUID = roomUUID[1]
+        } else if (window.location.search.match(/^\?[-\w]+$/) != null) {
+            roomUUID = window.location.search.replace(/^\?/, '');
+        } else {
+            window.location.href = '/';
+        }
+        document.querySelector('title').innerText.replace(/ -.*$/, ' - ' + roomUUID);
 
     document.body.addEventListener('click', function() {
         instructions.style.display = 'none';

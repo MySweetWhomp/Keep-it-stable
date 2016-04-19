@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T19:47:03+02:00
+* @Last modified time: 2016-04-19T20:26:39+02:00
 */
 
 'use strict';
@@ -72,19 +72,23 @@ app.listen(3000, function() {
                 let room = roomManager.get(data.roomUUID),
                     member;
 
+                let mustRegisterMember = function() {
+                    logger.debug(`Ask register for ${data.roomUUID}`);
+                    if (room.members.count(false, true) > (room.size[0] * room.size[1]) / 2) {
+                        room.grow();
+                    }
+                    return room.registerMember();
+                };
+
                 if (data.memberUUID != null) {
                     logger.debug(`Ask register for ${data.memberUUID}@${data.roomUUID}`);
 
                     member = room.members.get(data.memberUUID) || room.registerMember();
                     if (member.dead || Date.now() - member.lastaction >= 30000) {
-                        logger.debug(`Ask register for ${data.roomUUID}`);
-
-                        member = room.registerMember();
+                        member = mustRegisterMember();
                     }
                 } else {
-                    logger.debug(`Ask register for ${data.roomUUID}`);
-
-                    member = room.registerMember();
+                    member = mustRegisterMember();
                 }
 
                 member.sock = sock;

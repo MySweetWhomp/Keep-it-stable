@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T22:06:17+02:00
+* @Last modified time: 2016-04-19T20:25:44+02:00
 */
 
 .game, .hud {
@@ -141,7 +141,7 @@
 }
 
 .game .right {
-    right: 2px;
+    right: 1px;
     z-index: 10;
 
     background-image: url(/static/assets/tilesright.gif);
@@ -208,4 +208,9 @@ div.instructions {
     left: 20px;
 
     cursor: pointer;
+}
+
+.map, .left, .right {
+    -webkit-transition: height 500ms ease-in-out;
+            transition: height 500ms ease-in-out;
 }
