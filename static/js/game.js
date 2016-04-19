@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T21:15:23+02:00
+* @Last modified time: 2016-04-19T21:30:23+02:00
 */
 
 window.addEventListener('load', function() {
@@ -149,6 +149,10 @@ window.addEventListener('load', function() {
         var square = document.createElement('div');
         square.classList.add('square', 'free');
         square.style.width = square.style.height = squareSize;
+        if (Math.floor(Math.random() * 3) === 0) {
+            console.debug('"here"')
+            square.classList.add('square-' + String(Math.floor(Math.random()* 8) + 1));
+        }
         map.appendChild(square);
 
         var onclick = (function(i, j, square) {

@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:25:44+02:00
+* @Last modified time: 2016-04-19T21:32:34+02:00
 */
 
 .game, .hud {
@@ -40,6 +40,16 @@
 
     cursor: pointer;
 }
+
+.square-1 { background-image: url(/static/assets/tiles1.gif); }
+.square-2 { background-image: url(/static/assets/tiles2.gif); }
+.square-3 { background-image: url(/static/assets/tiles3.gif); }
+.square-4 { background-image: url(/static/assets/tiles4.gif); }
+.square-5 { background-image: url(/static/assets/tiles5.gif); }
+.square-6 { background-image: url(/static/assets/tiles6.gif); }
+.square-7 { background-image: url(/static/assets/tiles7.gif); }
+.square-8 { background-image: url(/static/assets/tiles8.gif); }
+.square-9 { background-image: url(/static/assets/tiles9.gif); }
 
 .map img {
     position: absolute;
