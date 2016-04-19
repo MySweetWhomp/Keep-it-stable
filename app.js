@@ -74,7 +74,7 @@ app.listen(3000, function() {
 
                 let mustRegisterMember = function() {
                     logger.debug(`Ask register for ${data.roomUUID}`);
-                    if (room.members.count(false, true) > (room.size[0] * room.size[1]) / 2) {
+                    if (room.members.count(false, true) >= (room.size[0] * room.size[1]) / 2) {
                         room.grow();
                         logger.info(`${room.UUID} must grow!`);
                     }
