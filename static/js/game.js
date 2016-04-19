@@ -22,6 +22,12 @@ window.addEventListener('load', function() {
                 loop: true
             })
         },
+        sounds = {
+            plop: new Howl({
+                urls: ['/static/assets/plop.mp3'],
+                loop: false
+            })
+        },
         musicFadeTiming = 200,
         currentMusic,
         roomUUID,
