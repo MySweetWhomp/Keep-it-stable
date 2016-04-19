@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:39:39+02:00
+* @Last modified time: 2016-04-19T20:43:59+02:00
 */
 
 window.addEventListener('load', function() {
@@ -49,7 +49,7 @@ window.addEventListener('load', function() {
         } else {
             window.location.href = '/';
         }
-        document.querySelector('title').innerText.replace(/ -.*$/, ' - ' + roomUUID);
+        // document.querySelector('title').innerText.replace(/ -.*$/, ' - ' + roomUUID);
 
     document.body.addEventListener('click', function() {
         instructions.style.display = 'none';
