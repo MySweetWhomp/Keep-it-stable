@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:43:59+02:00
+* @Last modified time: 2016-04-19T21:15:23+02:00
 */
 
 window.addEventListener('load', function() {
@@ -317,9 +317,13 @@ window.addEventListener('load', function() {
                     for (var i = 0; i < room.size[0]; ++i) {
                         createSquare(map, room.size[1] - 1, i);
                     }
+                    document.querySelector('.game').classList.add('shake', 'shake-constant');
                     map.style.height = String(squareSize * room.size[1] + 1) + 'px';
                     map.parentNode.querySelector('.left').style.height = map.style.height;
                     map.parentNode.querySelector('.right').style.height = map.style.height;
+                    setTimeout(function() {
+                        document.querySelector('.game').classList.remove('shake', 'shake-constant');
+                    }, 510);
                 });
 
                 var step = 5;

@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/MySweetWhomp/diversityjam#readme",
   "dependencies": {
+    "csshake": "^1.5.0",
     "express": "^4.13.4",
     "howler": "^1.1.29",
     "less-middleware": "^2.1.0",
