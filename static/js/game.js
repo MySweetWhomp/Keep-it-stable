@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T21:30:23+02:00
+* @Last modified time: 2016-04-19T21:41:30+02:00
 */
 
 window.addEventListener('load', function() {
@@ -127,11 +127,16 @@ window.addEventListener('load', function() {
         },
         function(input) {
             var total = 8;
-            if (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1){
-                total -= (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) ? 5 : 3;
-            } else if (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) {
-                total -= (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1) ? 5 : 3;
+            if (room.size[1] > 1) {
+                if (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1) {
+                    total -= (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) ? 5 : 3;
+                } else if (me.pos.y <= 0 || me.pos.y >= room.size[1] - 1) {
+                    total -= (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1) ? 5 : 3;
+                }
+            } else {
+                total = (me.pos.x <= 0 || me.pos.x >= room.size[0] - 1) ? 1 : 2;
             }
+            if (total === 1) { return -1; }
             return input.length >= (total / 2) ? -1 : 1;
         },
         function(input) {
@@ -150,7 +155,6 @@ window.addEventListener('load', function() {
         square.classList.add('square', 'free');
         square.style.width = square.style.height = squareSize;
         if (Math.floor(Math.random() * 3) === 0) {
-            console.debug('"here"')
             square.classList.add('square-' + String(Math.floor(Math.random()* 8) + 1));
         }
         map.appendChild(square);
