@@ -14,10 +14,10 @@ block content
         img(src='/static/assets/title.png')
         ul
             each room in rooms
-                if room && room.members.count(false, true) > 0
+                if room
                     li
                         a(href='r/' + room.UUID)= room.UUID
-                        |  (#{room.members.count(false, true)} person, up since 
+                        |  (
                         span.time(x-attr-since=room.startedAt)
                         | )
         form(method='post', action='/r')
