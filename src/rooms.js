@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T22:22:50+02:00
+* @Last modified time: 2016-04-21T20:56:11+02:00
 */
 
 'use strict';
@@ -32,6 +32,11 @@ class Room {
         }
 
         this.members = new MemberManager(this);
+        this.memberStates = {
+            ACTIVE: 1,
+            SLEEPING: 2,
+            DEAD: 3
+        };
 
         var possibleTypes = [
             [0, 1, 2, 3],
