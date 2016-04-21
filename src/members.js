@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-19T20:03:55+02:00
+* @Last modified time: 2016-04-21T21:07:15+02:00
 */
 
 'use strict';
@@ -20,10 +20,10 @@ class Member {
         this.UUID = UUIDGenerator.v1();
         this.room = room;
         this.pos = { x: -1, y: -1 };
-        this.state = 50;
-        this.stateDirection = 0;
-        this.dead = false;
+        this.score = 50;
+        this.scoreDynamic = 0;
 
+        this.state = room.memberStates.SLEEPING;
         this.lastaction = Date.now();
 
         var possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
@@ -37,9 +37,9 @@ class Member {
             UUID: this.UUID,
             pos: this.pos,
             type: this.type,
-            state: this.state,
-            stateDirection: this.stateDirection,
-            dead: this.dead
+            score: this.score,
+            scoreDynamic: this.scoreDynamic,
+            state: this.state
         };
     }
 
@@ -58,10 +58,17 @@ class Member {
         logger.info(`Player ${this.UUID}@${this.room.UUID} moved to (${this.pos.x}, ${this.pos.y})`);
     }
 
+    connect() {
+        this.state = this.room.memberStates.ACTIVE;
+        this.room.members.emit('connected', this.getInfo());
+    }
+
     disconnect() {
         this.sock = undefined;
-        this.freeCellPos();
         this.lastaction = Date.now();
+        this.state = this.room.memberStates.SLEEPING;
+
+        this.room.members.emit('disconnected', this.UUID);
     }
 }
 

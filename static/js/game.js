@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-20T00:57:41+02:00
+* @Last modified time: 2016-04-21T21:20:00+02:00
 */
 
 window.addEventListener('load', function() {
@@ -103,10 +103,10 @@ window.addEventListener('load', function() {
             return positives;
         },
         getAsset: function(member) {
-            var stateAsset = member.state
-                ? scaleAssets[parseInt(member.state / scale) + 1]
+            var scoreAsset = member.score
+                ? scaleAssets[parseInt(member.score / scale) + 1]
                 : scaleAssets[0];
-            return '/static/assets/' + member.type.name + stateAsset + '.gif';
+            return '/static/assets/' + member.type.name + scoreAsset + '.gif';
         }
     };
 
@@ -161,7 +161,7 @@ window.addEventListener('load', function() {
 
         var onclick = (function(i, j, square) {
             return function() {
-                if (square.classList.contains('free') && !me.dead && me.state > 0) {
+                if (square.classList.contains('free') && me.state === room.memberStates.ACTIVE && me.score > 0) {
                     move(j, i);
                     sounds.plop.play();
                 }
@@ -239,10 +239,14 @@ window.addEventListener('load', function() {
             document.body.addEventListener('touchend', startgame);
 
             function start(data) {
+
                 sock.off('startedplay');
                 document.querySelector('.game').style.display = document.querySelector('.hud').style.display = 'block';
 
                 room = data.room;
+
+                me.state = room.memberStates.ACTIVE;
+
                 var meIndex = utils.getMemberIndex(me.UUID);
                 room.members = room.members.slice(0, meIndex).concat(room.members.slice(meIndex + 1, room.members.length));
                 initMap();
@@ -273,22 +277,22 @@ window.addEventListener('load', function() {
                 sock.on('disconnected', function(oldMember) {
                     var oldMemberIndex = utils.getMemberIndex(oldMember);
                     oldMember = room.members[oldMemberIndex];
-                    if (oldMember && !oldMember.dead && oldMember.state > 0) {
+                    if (oldMember && oldMember.state !== room.memberStates.DEAD && oldMember.score > 0) {
                         map.removeChild(oldMember.picture);
                         utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
                         room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
                     }
-                    updateState();
+                    updateScore();
                 });
 
                 sock.on('moved', function(data) {
                     onmoved(data.member, data.instruction);
                 });
 
-                sock.on('changedstate', function(data) {
+                sock.on('changedscore', function(data) {
                     var member = utils.getMember(data.member);
 
-                    member.state = data.state;
+                    member.score = data.score;
                     member.picture.setAttribute('src', utils.getAsset(member));
                 });
 
@@ -342,32 +346,32 @@ window.addEventListener('load', function() {
                 });
 
                 var step = 5;
-                function theStateUpdate() {
-                    var cat = parseInt(me.state / scale);
-                    me.state = Math.min(100, Math.max(0, me.state + (step * me.stateDirection)));
-                    if (parseInt(me.state / scale) !== cat || (me.state === 0 && !me.dead)) {
-                        updateState();
+                function theScoreUpdate() {
+                    var cat = parseInt(me.score / scale);
+                    me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
+                    if (parseInt(me.score / scale) !== cat || (me.score === 0 && me.state !== room.memberStates.DEAD)) {
+                        updateScore();
                     }
-                    gauge.me.style['width'] = String(me.state) + '%';
-                    if (!me.dead && me.state > 0) {
-                        timer = setTimeout(theStateUpdate, 1000);
+                    gauge.me.style['width'] = String(me.score) + '%';
+                    if (me.score > 0 && me.state !== room.memberStates.DEAD) {
+                        timer = setTimeout(theScoreUpdate, 1000);
                     }
                 };
-                timer = setTimeout(theStateUpdate, 1000);
+                timer = setTimeout(theScoreUpdate, 1000);
             }
         });
     }
 
     var isFirst = true;
-    function updateState() {
-        var newStateDirection = computeScore[me.type.rules](utils.getAdjacentMembers());
-        if (me.stateDirection !== newStateDirection) {
-            me.stateDirection = newStateDirection;
+    function updateScore() {
+        var newScoreDynamic = computeScore[me.type.rules](utils.getAdjacentMembers());
+        if (me.scoreDynamic !== newScoreDynamic) {
+            me.scoreDynamic = newScoreDynamic;
 
             me.feedback.classList.remove('p1', 'm1');
             gauge.me.classList.remove('p1', 'm1');
-            if (me.stateDirection !== 0) {
-                if (me.stateDirection > 0) {
+            if (me.scoreDynamic !== 0) {
+                if (me.scoreDynamic > 0) {
                     me.feedback.classList.add('p1');
                     gauge.me.classList.add('p1');
                 } else {
@@ -377,17 +381,17 @@ window.addEventListener('load', function() {
             }
 
             if (!isFirst) {
-                me.state = Math.min(100, Math.max(20, me.state + (scale * me.stateDirection)));
+                me.score = Math.min(100, Math.max(20, me.score + (scale * me.scoreDynamic)));
             }
         }
-        gauge.me.style['width'] = String(me.state) + '%';
-        changeState(me.state, me.stateDirection);
+        gauge.me.style['width'] = String(me.score) + '%';
+        changeScore(me.score, me.scoreDynamic);
         isFirst = false;
 
         var oldMusic = currentMusic;
-        if (me.state < 40) {
+        if (me.score < 40) {
             currentMusic = 'slow';
-        } else if (me.state >= 40 && me.state < 80) {
+        } else if (me.score >= 40 && me.score < 80) {
             currentMusic = 'neutral';
         } else {
             currentMusic = 'rapid';
@@ -417,15 +421,11 @@ window.addEventListener('load', function() {
 
             if (!skipStateComputation) {
                 // Update state
-                updateState();
+                updateScore();
             }
 
             personWhoMoved.picture.style.display = 'block';
         }
-    }
-
-    function feedback() {
-
     }
 
     function move(x, y, onnomoved) {
@@ -450,7 +450,7 @@ window.addEventListener('load', function() {
         move(x, y, moveToRandom);
     }
 
-    function changeState(newState, newStateDirection) {
-        sock.emit('changestate', { state: newState, direction: newStateDirection });
+    function changeScore(newScore, newScoreDynamic) {
+        sock.emit('changescore', { score: newScore, direction: newScoreDynamic });
     }
 });

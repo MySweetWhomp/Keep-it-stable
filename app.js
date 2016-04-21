@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T20:57:30+02:00
+* @Last modified time: 2016-04-21T21:10:44+02:00
 */
 
 'use strict';
@@ -100,13 +100,9 @@ app.listen(3000, function() {
 
                 member.sock.on('startplay', function() {
                     member.sock.emit('startedplay', {
-                        room: {
-                            members: room.members.getAllInfo(),
-                            size: room.size,
-                            societyDownLimit: room.societyDownLimit
-                        }
+                        room: room.getInfo()
                     });
-                    room.members.emit('connected', member.getInfo());
+                    member.connect();
                 });
 
                 member.sock.on('move', function(instruction) {
@@ -118,21 +114,19 @@ app.listen(3000, function() {
                     }
                 });
 
-                member.sock.on('changestate', function(data) {
-                    member.state = data.state;
-                    member.stateDirection = data.stateDirection;
-                    if (member.state <= 0) {
-                        member.dead = true;
+                member.sock.on('changescore', function(data) {
+                    member.score = data.score;
+                    member.scoreDynamic = data.scoreDynamic;
+                    if (member.score <= 0) {
+                        member.state = room.memberStates.DEAD;
                         member.sock.emit('gameover', { world: false });
                     }
                     room.updateScores(member.type.name);
-                    room.members.emit('changedstate', { member: member.UUID, state: data.state });
+                    room.members.emit('changedstate', { member: member.UUID, score: data.score });
                 });
 
                 member.sock.on('disconnect', function() {
                     logger.debug(`${member.UUID} disconnected`);
-
-                    room.members.emit('disconnected', member.UUID);
 
                     member.disconnect();
                 });
