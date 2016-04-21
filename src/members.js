@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T22:44:48+02:00
+* @Last modified time: 2016-04-21T22:46:59+02:00
 */
 
 'use strict';
@@ -27,7 +27,6 @@ class Member {
 
         var possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[utils.getRandomItemFrom(possibleTypes)];
-        this.type = this.room.types[3];
 
         logger.debug(`Member construction, UUID is ${this.UUID}`);
     }
