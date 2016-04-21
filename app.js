@@ -4,7 +4,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T21:10:44+02:00
+* @Last modified time: 2016-04-21T22:08:05+02:00
 */
 
 'use strict';
@@ -86,7 +86,7 @@ app.listen(3000, function() {
                     logger.debug(`Ask register for ${data.memberUUID}@${data.roomUUID}`);
 
                     member = room.members.get(data.memberUUID) || room.registerMember();
-                    if (member.dead || Date.now() - member.lastaction >= 30000) {
+                    if ([room.states.ACTIVE, room.states.SLEEPING].indexOf(member.state) < 0) {
                         member = mustRegisterMember();
                     }
                 } else {
@@ -118,11 +118,13 @@ app.listen(3000, function() {
                     member.score = data.score;
                     member.scoreDynamic = data.scoreDynamic;
                     if (member.score <= 0) {
-                        member.state = room.memberStates.DEAD;
+                        member.state = room.states.DEAD;
                         member.sock.emit('gameover', { world: false });
                     }
                     room.updateScores(member.type.name);
-                    room.members.emit('changedstate', { member: member.UUID, score: data.score });
+                    room.members.emit('changedscore', { member: member.UUID, score: data.score });
+
+                    logger.debug(`Received 'changescore' from ${member.UUID}: ${member.score} (${member.state})`);
                 });
 
                 member.sock.on('disconnect', function() {

@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T21:11:21+02:00
+* @Last modified time: 2016-04-21T21:30:24+02:00
 */
 
 'use strict';
@@ -32,7 +32,7 @@ class Room {
         }
 
         this.members = new MemberManager(this);
-        this.memberStates = {
+        this.states = {
             ACTIVE: 1,
             SLEEPING: 2,
             DEAD: 3
@@ -84,7 +84,7 @@ class Room {
             members: this.members.getAllInfo(),
             size: this.size,
             societyDownLimit: this.societyDownLimit,
-            memberStates: this.memberStates
+            states: this.states
         }
     }
 
@@ -124,7 +124,7 @@ class Room {
         this.crews['red'] = 0;
         this.crews['purple'] = 0;
         for (var i = 0; i < members.length; ++i) {
-            if (members[i].sock != null || members[i].state !== this.memberStates.ACTIVE || members[i].score <= 0) {
+            if (members[i].sock != null || members[i].state !== this.states.ACTIVE || members[i].score <= 0) {
                 ++n[members[i].type.name];
                 this.crews[members[i].type.name] += members[i].score;
             }

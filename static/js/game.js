@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T21:20:00+02:00
+* @Last modified time: 2016-04-21T22:18:28+02:00
 */
 
 window.addEventListener('load', function() {
@@ -103,10 +103,14 @@ window.addEventListener('load', function() {
             return positives;
         },
         getAsset: function(member) {
-            var scoreAsset = member.score
-                ? scaleAssets[parseInt(member.score / scale) + 1]
-                : scaleAssets[0];
-            return '/static/assets/' + member.type.name + scoreAsset + '.gif';
+            if (member.state !== room.states.SLEEPING) {
+                var scoreAsset = member.score
+                    ? scaleAssets[parseInt(member.score / scale) + 1]
+                    : scaleAssets[0];
+                return '/static/assets/' + member.type.name + scoreAsset + '.gif';
+            } else {
+                return '/static/assets/' + member.type.name + 'sleeping.gif';
+            }
         }
     };
 
@@ -161,7 +165,7 @@ window.addEventListener('load', function() {
 
         var onclick = (function(i, j, square) {
             return function() {
-                if (square.classList.contains('free') && me.state === room.memberStates.ACTIVE && me.score > 0) {
+                if (square.classList.contains('free') && me.state === room.states.ACTIVE && me.score > 0) {
                     move(j, i);
                     sounds.plop.play();
                 }
@@ -239,13 +243,12 @@ window.addEventListener('load', function() {
             document.body.addEventListener('touchend', startgame);
 
             function start(data) {
-
                 sock.off('startedplay');
                 document.querySelector('.game').style.display = document.querySelector('.hud').style.display = 'block';
 
                 room = data.room;
 
-                me.state = room.memberStates.ACTIVE;
+                me.state = room.states.ACTIVE;
 
                 var meIndex = utils.getMemberIndex(me.UUID);
                 room.members = room.members.slice(0, meIndex).concat(room.members.slice(meIndex + 1, room.members.length));
@@ -260,10 +263,15 @@ window.addEventListener('load', function() {
                 me.feedback.appendChild(me.feedback.picture);
                 map.appendChild(me.feedback);
 
-                moveToRandom();
+                if (me.pos.x < 0 || me.pos.y < 0) {
+                    moveToRandom();
+                } else {
+                    onmoved(me.UUID, me.pos);
+                }
 
                 sock.on('connected', function(newMember) {
-                    if (utils.getMember(newMember.UUID) == null) {
+                    var member = utils.getMember(newMember.UUID);
+                    if (member == null) {
                         newMember.picture = document.createElement('img');
                         newMember.picture.classList.add('character');
                         newMember.picture.setAttribute('src', utils.getAsset(newMember));
@@ -271,18 +279,24 @@ window.addEventListener('load', function() {
                         if (newMember.UUID !== me.UUID) {
                             room.members.push(newMember);
                         }
+                    } else {
+                        member.state = newMember.state;
+                        member.score = newMember.score;
+                        member.picture.setAttribute('src', utils.getAsset(newMember));
                     }
                 });
 
-                sock.on('disconnected', function(oldMember) {
-                    var oldMemberIndex = utils.getMemberIndex(oldMember);
-                    oldMember = room.members[oldMemberIndex];
-                    if (oldMember && oldMember.state !== room.memberStates.DEAD && oldMember.score > 0) {
-                        map.removeChild(oldMember.picture);
-                        utils.getMapCell(oldMember.pos.x, oldMember.pos.y).classList.add('free');
-                        room.members = room.members.slice(0, oldMemberIndex).concat(room.members.slice(oldMemberIndex + 1, room.members.length));
+                sock.on('disconnected', function(data) {
+                    var oldMember = room.members[utils.getMemberIndex(data.member)];
+                    if (oldMember != null) {
+                        oldMember.state = data.state;
+                        if (oldMember.state === room.states.DEAD) {
+                            oldMember.score = 0;
+                        }
+                        console.debug(oldMember);
+                        oldMember.picture.setAttribute('src', utils.getAsset(oldMember));
+                        updateScore();
                     }
-                    updateScore();
                 });
 
                 sock.on('moved', function(data) {
@@ -349,11 +363,11 @@ window.addEventListener('load', function() {
                 function theScoreUpdate() {
                     var cat = parseInt(me.score / scale);
                     me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
-                    if (parseInt(me.score / scale) !== cat || (me.score === 0 && me.state !== room.memberStates.DEAD)) {
+                    if (parseInt(me.score / scale) !== cat || (me.score === 0 && me.state !== room.states.DEAD)) {
                         updateScore();
                     }
                     gauge.me.style['width'] = String(me.score) + '%';
-                    if (me.score > 0 && me.state !== room.memberStates.DEAD) {
+                    if (me.score > 0 && me.state !== room.states.DEAD) {
                         timer = setTimeout(theScoreUpdate, 1000);
                     }
                 };

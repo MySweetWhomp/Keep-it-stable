@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T21:07:15+02:00
+* @Last modified time: 2016-04-21T22:16:22+02:00
 */
 
 'use strict';
@@ -23,8 +23,7 @@ class Member {
         this.score = 50;
         this.scoreDynamic = 0;
 
-        this.state = room.memberStates.SLEEPING;
-        this.lastaction = Date.now();
+        this.state = room.states.SLEEPING;
 
         var possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[utils.getRandomItemFrom(possibleTypes)];
@@ -59,16 +58,19 @@ class Member {
     }
 
     connect() {
-        this.state = this.room.memberStates.ACTIVE;
+        this.state = this.room.states.ACTIVE;
         this.room.members.emit('connected', this.getInfo());
     }
 
     disconnect() {
         this.sock = undefined;
-        this.lastaction = Date.now();
-        this.state = this.room.memberStates.SLEEPING;
 
-        this.room.members.emit('disconnected', this.UUID);
+        logger.debug(`Disconnect ${this.UUID} (state is ${this.state})`);
+        if (this.state === this.room.states.ACTIVE) {
+            this.state = this.room.states.SLEEPING;
+        }
+
+        this.room.members.emit('disconnected', { member: this.UUID, state: this.state });
     }
 }
 
@@ -98,7 +100,7 @@ class MemberManager {
     getAllInfo() {
         let members = [];
         for (var i = 0; i < this.members.length; ++i) {
-            if (this.members[i].sock != null || this.members[i].dead) {
+            if (this.members[i].sock != null || this.members[i].state !== this.room.states.ACTIVE) {
                 members.push(this.members[i].getInfo());
             }
         }
@@ -122,7 +124,7 @@ class MemberManager {
     count(disconnected, dead) {
         let n = 0;
         for (let i = 0; i < this.members.length; ++i) {
-            if (this.members[i].sock != null || disconnected || (dead && this.members[i].dead)) {
+            if (this.members[i].sock != null || disconnected || (dead && this.members[i].state === this.room.states.DEAD)) {
                 ++n;
             }
         }
