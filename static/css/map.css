@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T20:38:18+02:00
+* @Last modified time: 2016-04-21T20:44:44+02:00
 */
 
 * {
@@ -27,7 +27,7 @@
     z-index: 20;
 
     padding: 0 80px;
-    margin: -20px auto 0 auto;
+    margin: 102px auto 0 auto;
 }
 
 .character {
@@ -118,13 +118,23 @@
 }
 
 .hud {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 40;
 
     width: 960px;
     height: 122px;
-    margin: 0 auto;
 
     background-image: url(/static/assets/HUD.gif);
+
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+}
+
+.hud img {
+    position: relative;
+    z-index: 40;
 }
 
 .hud > div {
@@ -138,11 +148,6 @@
 
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%);
-}
-
-.hud img {
-    position: relative;
-    z-index: 20;
 }
 
 .hud .megauge {
