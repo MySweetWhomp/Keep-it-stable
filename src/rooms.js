@@ -2,8 +2,8 @@
 * @Author: Paul Joannon
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T21:30:24+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-23T23:28:45+02:00
 */
 
 'use strict';
@@ -23,9 +23,9 @@ class Room {
 
         this.size = [6, 1];
         this.map = '';
-        for (var i = 0; i < this.size[1]; ++i) {
+        for (let i = 0; i < this.size[1]; ++i) {
             let line = '';
-            for (var j = 0; j < this.size[0]; ++j) {
+            for (let j = 0; j < this.size[0]; ++j) {
                 line += '.';
             }
             this.map += `${line}\n`;
@@ -38,7 +38,7 @@ class Room {
             DEAD: 3
         };
 
-        var possibleTypes = [
+        let possibleTypes = [
             [0, 1, 2, 3],
             [0, 1, 1, 2],
             [0, 1, 1, 3],
@@ -52,8 +52,8 @@ class Room {
             { name: 'red', rules: null },
             { name: 'purple', rules: null }
         ];
-        for (var i = 0; i < this.types.length; ++i) {
-            var j = Math.floor(Math.random() * possibleTypes.length),
+        for (let i = 0; i < this.types.length; ++i) {
+            let j = Math.floor(Math.random() * possibleTypes.length),
                 type = possibleTypes[j];
             possibleTypes = possibleTypes.slice(0, j).concat(possibleTypes.slice(j + 1, possibleTypes.length));
             this.types[i].rules = type;
@@ -123,7 +123,7 @@ class Room {
         this.crews['green'] = 0;
         this.crews['red'] = 0;
         this.crews['purple'] = 0;
-        for (var i = 0; i < members.length; ++i) {
+        for (let i = 0; i < members.length; ++i) {
             if (members[i].sock != null || members[i].state !== this.states.ACTIVE || members[i].score <= 0) {
                 ++n[members[i].type.name];
                 this.crews[members[i].type.name] += members[i].score;
@@ -135,10 +135,10 @@ class Room {
         this.crews['purple'] /= (n['purple'] || 1);
         this.members.emit('updatedgauge', { score: this.crews[crew], crew: crew }, crew);
 
-        var now = Date.now();
+        let now = Date.now();
         if (this.lastupdatescore == null || now - this.lastupdatescore > 500) {
             this.world = this.crews['yellow'] + this.crews['green'] + this.crews['red'] + this.crews['purple'];
-            var divisor = 0;
+            let divisor = 0;
             if (n['yellow'] > 0) { divisor += 1; }
             if (n['green'] > 0) { divisor += 1; }
             if (n['red'] > 0) { divisor += 1; }
@@ -156,8 +156,8 @@ class Room {
 
     grow() {
         ++this.size[1];
-        var newLine = '';
-        for (var i = 0; i < this.size[0]; ++i) {
+        let newLine = '';
+        for (let i = 0; i < this.size[0]; ++i) {
             newLine += '.';
         }
         this.map += `${newLine}\n`;

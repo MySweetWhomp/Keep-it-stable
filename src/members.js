@@ -3,8 +3,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T22:46:59+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-23T23:28:26+02:00
 */
 
 'use strict';
@@ -25,7 +25,7 @@ class Member {
 
         this.state = room.states.SLEEPING;
 
-        var possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
+        let possibleTypes = utils.getNRandomInts(0, Object.keys(this.room.types).length, 100);
         this.type = this.room.types[utils.getRandomItemFrom(possibleTypes)];
 
         logger.debug(`Member construction, UUID is ${this.UUID}`);
@@ -99,7 +99,7 @@ class MemberManager {
 
     getAllInfo() {
         let members = [];
-        for (var i = 0; i < this.members.length; ++i) {
+        for (let i = 0; i < this.members.length; ++i) {
             if (this.members[i].sock != null || this.members[i].state !== this.room.states.ACTIVE) {
                 members.push(this.members[i].getInfo());
             }
@@ -112,7 +112,7 @@ class MemberManager {
     }
 
     emit(type, data, crew) {
-        for (var i = 0; i < this.members.length; ++i) {
+        for (let i = 0; i < this.members.length; ++i) {
             if (this.members[i].sock != null) {
                 if (crew == null || this.members[i].type.name === crew) {
                     this.members[i].sock.emit(type, data);

@@ -1,10 +1,9 @@
-
 /**
 * @Author: Paul Joannon
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T22:44:43+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-04-23T23:29:00+02:00
 */
 
 'use strict';
