@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T16:57:40+02:00
+* @Last modified time: 2016-10-05T17:02:22+02:00
 */
 
 window.addEventListener('load', function() {
@@ -217,7 +217,7 @@ window.addEventListener('load', function() {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
             me = data.me;
-            me.fullsince = 0;
+            me.fullsince = me.score >= 100 ? 5000 : 0;
 
             document.querySelector('.meicon').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
             document.querySelector('.crewicon').setAttribute('src', '/static/assets/iconsgroup' + me.type.name + '.gif');
