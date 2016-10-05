@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T17:11:09+02:00
+* @Last modified time: 2016-10-05T20:14:31+02:00
 */
 
 window.addEventListener('load', function() {
@@ -481,4 +481,8 @@ window.addEventListener('load', function() {
     function changeScore(newScore, newScoreDynamic) {
         sock.emit('changescore', { score: newScore, direction: newScoreDynamic });
     }
+
+    document.querySelector('.gameover a.respawn').addEventListener('click', function() {
+        window.location.reload();
+    });
 });
