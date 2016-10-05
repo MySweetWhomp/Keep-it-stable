@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-23T23:29:00+02:00
+* @Last modified time: 2016-10-05T15:53:03+02:00
 */
 
 'use strict';
@@ -114,11 +114,13 @@ app.listen(3000, function() {
                 });
 
                 member.sock.on('changescore', function(data) {
-                    member.score = data.score;
+                    member.score = Math.min(100, data.score);
                     member.scoreDynamic = data.scoreDynamic;
                     if (member.score <= 0) {
                         member.state = room.states.DEAD;
                         member.sock.emit('gameover', { world: false });
+                    } else if (data.score >= 200) {
+                        member.state = room.states.HAPPY;
                     }
                     room.updateScores(member.type.name);
                     room.members.emit('changedscore', { member: member.UUID, score: data.score });

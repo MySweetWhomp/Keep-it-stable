@@ -2,8 +2,8 @@
 * @Author: Paul Joannon <paulloz>
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-21T22:27:43+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-10-05T16:57:40+02:00
 */
 
 window.addEventListener('load', function() {
@@ -66,7 +66,7 @@ window.addEventListener('load', function() {
     });
 
     var scale = 20,
-        scaleAssets = ['eliminated', 'verysad', 'sad', 'neutral', 'happy', 'veryhappy', 'veryhappy'];
+        scaleAssets = ['eliminated', 'verysad', 'sad', 'neutral', 'happy', 'veryhappy', 'happymax'];
 
     var utils = {
         getRandomInt: function(min, max) { return Math.floor(Math.random() * (max - min)) + min; },
@@ -165,7 +165,7 @@ window.addEventListener('load', function() {
 
         var onclick = (function(i, j, square) {
             return function() {
-                if (square.classList.contains('free') && me.state === room.states.ACTIVE && me.score > 0) {
+                if (square.classList.contains('free') && me.state === room.states.ACTIVE && me.score > 0 && me.score < 100) {
                     move(j, i);
                     sounds.plop.play();
                 }
@@ -217,6 +217,7 @@ window.addEventListener('load', function() {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
         sock.on('registered', function(data) {
             me = data.me;
+            me.fullsince = 0;
 
             document.querySelector('.meicon').setAttribute('src', '/static/assets/icons' + me.type.name + '.gif');
             document.querySelector('.crewicon').setAttribute('src', '/static/assets/iconsgroup' + me.type.name + '.gif');
@@ -363,13 +364,25 @@ window.addEventListener('load', function() {
                 function theScoreUpdate() {
                     var cat = parseInt(me.score / scale);
                     me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
+                    if (me.score > 0 && me.state !== room.states.DEAD) {
+                        if (me.score >= 100) {
+                            me.fullsince += 1000;
+                            if (me.fullsince >= 5000) {
+                                me.state = room.states.HAPPY;
+                                me.score = 100;
+                                changeScore(me.score, me.scoreDynamic);
+                            } else {
+                                me.score = 99;
+                            }
+                        } else {
+                            me.fullsince = 0;
+                        }
+                        timer = setTimeout(theScoreUpdate, 1000);
+                    }
                     if (parseInt(me.score / scale) !== cat || (me.score === 0 && me.state !== room.states.DEAD)) {
                         updateScore();
                     }
                     gauge.me.style['width'] = String(me.score) + '%';
-                    if (me.score > 0 && me.state !== room.states.DEAD) {
-                        timer = setTimeout(theScoreUpdate, 1000);
-                    }
                 };
                 timer = setTimeout(theScoreUpdate, 1000);
             }

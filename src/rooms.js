@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-23T23:28:45+02:00
+* @Last modified time: 2016-10-05T15:39:16+02:00
 */
 
 'use strict';
@@ -35,7 +35,8 @@ class Room {
         this.states = {
             ACTIVE: 1,
             SLEEPING: 2,
-            DEAD: 3
+            DEAD: 3,
+            HAPPY: 4
         };
 
         let possibleTypes = [
