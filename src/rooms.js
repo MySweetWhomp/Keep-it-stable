@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T15:39:16+02:00
+* @Last modified time: 2016-10-05T17:12:02+02:00
 */
 
 'use strict';
@@ -125,7 +125,7 @@ class Room {
         this.crews['red'] = 0;
         this.crews['purple'] = 0;
         for (let i = 0; i < members.length; ++i) {
-            if (members[i].sock != null || members[i].state !== this.states.ACTIVE || members[i].score <= 0) {
+            if (members[i].sock != null || members[i].state !== this.states.ACTIVE || members[i].score <= 0 || members[i].score >= 100) {
                 ++n[members[i].type.name];
                 this.crews[members[i].type.name] += members[i].score;
             }

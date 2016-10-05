@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T17:02:22+02:00
+* @Last modified time: 2016-10-05T17:11:09+02:00
 */
 
 window.addEventListener('load', function() {
@@ -109,7 +109,9 @@ window.addEventListener('load', function() {
                     : scaleAssets[0];
                 return '/static/assets/' + member.type.name + scoreAsset + '.gif';
             } else {
-                return '/static/assets/' + member.type.name + 'sleeping.gif';
+                return member.score === 100
+                    ? '/static/assets/' + member.type.name + scaleAssets[scaleAssets.length - 1] + '.gif'
+                    : '/static/assets/' + member.type.name + 'sleeping.gif';
             }
         }
     };
@@ -294,7 +296,6 @@ window.addEventListener('load', function() {
                         if (oldMember.state === room.states.DEAD) {
                             oldMember.score = 0;
                         }
-                        console.debug(oldMember);
                         oldMember.picture.setAttribute('src', utils.getAsset(oldMember));
                         updateScore();
                     }
@@ -364,7 +365,7 @@ window.addEventListener('load', function() {
                 function theScoreUpdate() {
                     var cat = parseInt(me.score / scale);
                     me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
-                    if (me.score > 0 && me.state !== room.states.DEAD) {
+                    if (me.score > 0 && me.state !== room.states.DEAD && me.score < 100) {
                         if (me.score >= 100) {
                             me.fullsince += 1000;
                             if (me.fullsince >= 5000) {
