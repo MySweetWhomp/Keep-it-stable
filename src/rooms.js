@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T17:12:02+02:00
+* @Last modified time: 2016-10-13T17:48:58+02:00
 */
 
 'use strict';
@@ -18,6 +18,7 @@ class Room {
     constructor(UUID) {
         this.UUID = UUID || UUIDGenerator.v1();
         this.startedAt = Date.now();
+        this.mustDelete = 0;
 
         this.societyDownLimit = 25;
 
@@ -165,6 +166,10 @@ class Room {
         this.members.emit('grow');
     }
 
+    countActivePlayers() {
+        return this.members.getAllActive().length;
+    }
+
     logMap() {
         // logger.debug(`\n${this.map}`);
     }
@@ -200,6 +205,15 @@ class RoomManager {
     }
 
     getAll() {
+        for (let UUID in this.rooms) {
+            if (this.rooms[UUID].countActivePlayers() <= 0) {
+                if (++this.rooms[UUID].mustDelete >= 5) {
+                    this.remove(UUID);
+                }
+            } else {
+                this.rooms[UUID].mustDelete = 0;
+            }
+        }
         return this.rooms;
     }
 
