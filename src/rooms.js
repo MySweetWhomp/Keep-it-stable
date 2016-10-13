@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T07:36:06+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-13T17:48:58+02:00
+* @Last modified time: 2016-10-13T18:03:41+02:00
 */
 
 'use strict';
@@ -206,12 +206,14 @@ class RoomManager {
 
     getAll() {
         for (let UUID in this.rooms) {
-            if (this.rooms[UUID].countActivePlayers() <= 0) {
-                if (++this.rooms[UUID].mustDelete >= 5) {
-                    this.remove(UUID);
+            if (this.exists(UUID)) {
+                if (this.rooms[UUID].countActivePlayers() <= 0) {
+                    if (++this.rooms[UUID].mustDelete >= 5) {
+                        this.remove(UUID);
+                    }
+                } else {
+                    this.rooms[UUID].mustDelete = 0;
                 }
-            } else {
-                this.rooms[UUID].mustDelete = 0;
             }
         }
         return this.rooms;
