@@ -2,8 +2,8 @@
 * @Author: Paul Joannon
 * @Date:   2016-04-17T21:25:30+02:00
 * @Email:  hello@pauljoannon.com
-* @Last modified by:   Paul Joannon
-* @Last modified time: 2016-04-17T21:39:52+02:00
+* @Last modified by:   paulloz
+* @Last modified time: 2016-10-13T16:36:09+02:00
 */
 
 'use strict';
@@ -23,5 +23,15 @@ module.exports = exports = {
 
     getRandomItemFrom: function(input) {
         return input[module.exports.getRandomInt(0, input.length)];
+    },
+
+    filter: function(list, func) {
+        let ret = [];
+        for (var x of list) {
+            if (func(x)) {
+                ret.push(x);
+            }
+        }
+        return ret;
     }
 };

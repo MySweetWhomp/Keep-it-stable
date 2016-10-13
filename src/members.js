@@ -4,7 +4,7 @@
 * @Date:   2016-04-16T11:06:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-04-23T23:28:26+02:00
+* @Last modified time: 2016-10-13T17:07:41+02:00
 */
 
 'use strict';
@@ -95,6 +95,10 @@ class MemberManager {
 
     getAll() {
         return this.members;
+    }
+
+    getAllActive() {
+        return utils.filter(this.getAll(), member => member.state === this.room.states.ACTIVE);
     }
 
     getAllInfo() {
