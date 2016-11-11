@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T21:45:15+01:00
+* @Last modified time: 2016-11-11T22:19:00+01:00
 */
 
 * {
@@ -329,12 +329,23 @@ div.instructions {
     left: 156px;
 }
 
-.info {
+.btn {
     position: absolute;
-    bottom: 20px;
     left: 20px;
 
     cursor: pointer;
+}
+
+.info {
+    bottom: 20px;
+}
+
+.back {
+    bottom: 170px;
+}
+
+.sound {
+    bottom: 102px;
 }
 
 .map, .left, .right {

@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T21:21:45+01:00
+* @Last modified time: 2016-11-11T22:39:53+01:00
 */
 
 window.addEventListener('load', function() {
@@ -30,6 +30,7 @@ window.addEventListener('load', function() {
         },
         musicFadeTiming = 200,
         currentMusic,
+        musicOnOff = true,
         roomUUID,
         save = JSON.parse(window.localStorage.getItem('savedGame')),
         squareSize = 80,
@@ -205,7 +206,7 @@ window.addEventListener('load', function() {
         }
     };
 
-    function changeMusic(oldMusic, force) {
+    function changeMusic(oldMusic) {
         if (oldMusic) {
             musics[oldMusic].fade(1, 0, musicFadeTiming, function() {
                 musics[oldMusic].stop();
@@ -214,6 +215,19 @@ window.addEventListener('load', function() {
         musics[currentMusic].play();
         musics[currentMusic].fade(0, 1, musicFadeTiming);
     }
+
+    function toggleMusic() {
+        musicOnOff = !!!musicOnOff;
+        if (musicOnOff) {
+            changeMusic();
+            document.querySelector('.sound').setAttribute('src', '/static/assets/Sound.png');
+        } else {
+            musics[currentMusic].stop();
+            document.querySelector('.sound').setAttribute('src', '/static/assets/SoundOff.png');
+        }
+    }
+
+    document.querySelector('.sound').addEventListener('click', toggleMusic);
 
     function register(myUUID) {
         sock.emit('register', { roomUUID: roomUUID, memberUUID: myUUID });
