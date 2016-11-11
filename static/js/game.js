@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T22:48:21+01:00
+* @Last modified time: 2016-11-11T23:15:28+01:00
 */
 
 window.addEventListener('load', function() {
@@ -385,8 +385,9 @@ window.addEventListener('load', function() {
                             me.fullsince += 1000;
                             if (me.fullsince >= 5000) {
                                 me.state = room.states.HAPPY;
-                                me.score = 100;
+                                me.score = 200;
                                 changeScore(me.score, me.scoreDynamic);
+                                me.score = 100;
                                 happymax(timer);
                             } else {
                                 me.score = 99;

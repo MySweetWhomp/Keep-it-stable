@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T15:53:03+02:00
+* @Last modified time: 2016-11-11T23:14:36+01:00
 */
 
 'use strict';
@@ -85,6 +85,7 @@ app.listen(3000, function() {
                     logger.debug(`Ask register for ${data.memberUUID}@${data.roomUUID}`);
 
                     member = room.members.get(data.memberUUID) || room.registerMember();
+                    logger.debug(`MEMBER STATE IS ${member.state}`);
                     if ([room.states.ACTIVE, room.states.SLEEPING].indexOf(member.state) < 0) {
                         member = mustRegisterMember();
                     }
