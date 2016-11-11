@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T20:14:31+02:00
+* @Last modified time: 2016-11-11T21:21:45+01:00
 */
 
 window.addEventListener('load', function() {
@@ -372,6 +372,7 @@ window.addEventListener('load', function() {
                                 me.state = room.states.HAPPY;
                                 me.score = 100;
                                 changeScore(me.score, me.scoreDynamic);
+                                happymax();
                             } else {
                                 me.score = 99;
                             }
@@ -388,6 +389,15 @@ window.addEventListener('load', function() {
                 timer = setTimeout(theScoreUpdate, 1000);
             }
         });
+    }
+
+    function happymax() {
+        document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverhappy.png)';
+
+        document.querySelector('.gameover').classList.remove('hidden');
+        document.querySelector('.gameover').classList.add('gameover--happy')
+
+        clearTimeout(timer);
     }
 
     var isFirst = true;

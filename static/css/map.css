@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T12:30:34+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-10-05T20:15:02+02:00
+* @Last modified time: 2016-11-11T21:45:15+01:00
 */
 
 * {
@@ -249,6 +249,21 @@
             transition: opacity 2s ease-in;
 }
 
+.gameover--happy {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+
+    width: 752px;
+    height: 364px;
+
+    background-color: transparent;
+
+    -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+}
+
 .gameover.hidden {
     opacity: 0;
 
@@ -273,6 +288,11 @@
 
     -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
+}
+
+.gameover--happy a {
+    top: auto;
+    bottom: 10px;
 }
 
 .gameover a.respawn {
