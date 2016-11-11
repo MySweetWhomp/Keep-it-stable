@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T23:15:28+01:00
+* @Last modified time: 2016-11-11T23:42:17+01:00
 */
 
 window.addEventListener('load', function() {
@@ -30,7 +30,7 @@ window.addEventListener('load', function() {
         },
         musicFadeTiming = 200,
         currentMusic,
-        musicOnOff = true,
+        musicOnOff = window.localStorage.getItem('sound') !== "false",
         roomUUID,
         save = JSON.parse(window.localStorage.getItem('savedGame')),
         squareSize = 80,
@@ -42,15 +42,17 @@ window.addEventListener('load', function() {
         instructions = document.querySelector('div.instructions'),
         me, room, map;
 
-        roomUUID = window.location.href.match(/\/([-\w]+)$/);
-        if (roomUUID != null) {
-            roomUUID = roomUUID[1]
-        } else if (window.location.search.match(/^\?[-\w]+$/) != null) {
-            roomUUID = window.location.search.replace(/^\?/, '');
-        } else {
-            window.location.href = '/';
-        }
-        // document.querySelector('title').innerText.replace(/ -.*$/, ' - ' + roomUUID);
+    document.querySelector('.sound').setAttribute('src', musicOnOff ? '/static/assets/Sound.png' : '/static/assets/SoundOff.png');
+
+    roomUUID = window.location.href.match(/\/([-\w]+)$/);
+    if (roomUUID != null) {
+        roomUUID = roomUUID[1]
+    } else if (window.location.search.match(/^\?[-\w]+$/) != null) {
+        roomUUID = window.location.search.replace(/^\?/, '');
+    } else {
+        window.location.href = '/';
+    }
+    // document.querySelector('title').innerText.replace(/ -.*$/, ' - ' + roomUUID);
 
     document.body.addEventListener('click', function() {
         instructions.style.display = 'none';
@@ -212,8 +214,10 @@ window.addEventListener('load', function() {
                 musics[oldMusic].stop();
             });
         }
-        musics[currentMusic].play();
-        musics[currentMusic].fade(0, 1, musicFadeTiming);
+        if (musicOnOff) {
+            musics[currentMusic].play();
+            musics[currentMusic].fade(0, 1, musicFadeTiming);
+        }
     }
 
     function toggleMusic() {
@@ -225,6 +229,7 @@ window.addEventListener('load', function() {
             musics[currentMusic].stop();
             document.querySelector('.sound').setAttribute('src', '/static/assets/SoundOff.png');
         }
+        window.localStorage.setItem('sound', musicOnOff);
     }
 
     document.querySelector('.sound').addEventListener('click', toggleMusic);
@@ -385,9 +390,8 @@ window.addEventListener('load', function() {
                             me.fullsince += 1000;
                             if (me.fullsince >= 5000) {
                                 me.state = room.states.HAPPY;
-                                me.score = 200;
-                                changeScore(me.score, me.scoreDynamic);
                                 me.score = 100;
+                                changeScore(200, me.scoreDynamic);
                                 happymax(timer);
                             } else {
                                 me.score = 99;
