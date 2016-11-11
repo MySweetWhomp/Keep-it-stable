@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T22:39:53+01:00
+* @Last modified time: 2016-11-11T22:48:21+01:00
 */
 
 window.addEventListener('load', function() {
@@ -339,6 +339,7 @@ window.addEventListener('load', function() {
                 var timer;
 
                 sock.on('gameover', function(data) {
+                    document.querySelector('.gameover').classList.remove('gameover--happy');
                     if (data.world) {
                         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoversociety.png)';
                     } else {
@@ -379,14 +380,14 @@ window.addEventListener('load', function() {
                 function theScoreUpdate() {
                     var cat = parseInt(me.score / scale);
                     me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
-                    if (me.score > 0 && me.state !== room.states.DEAD && me.score < 100) {
+                    if (me.score > 0 && me.state !== room.states.DEAD) {
                         if (me.score >= 100) {
                             me.fullsince += 1000;
                             if (me.fullsince >= 5000) {
                                 me.state = room.states.HAPPY;
                                 me.score = 100;
                                 changeScore(me.score, me.scoreDynamic);
-                                happymax();
+                                happymax(timer);
                             } else {
                                 me.score = 99;
                             }
@@ -405,7 +406,7 @@ window.addEventListener('load', function() {
         });
     }
 
-    function happymax() {
+    function happymax(timer) {
         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverhappy.png)';
 
         document.querySelector('.gameover').classList.remove('hidden');
