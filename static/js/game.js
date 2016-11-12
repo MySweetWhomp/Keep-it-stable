@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-12T00:53:28+01:00
+* @Last modified time: 2016-11-12T02:25:09+01:00
 */
 
 window.addEventListener('load', function() {
@@ -351,7 +351,7 @@ window.addEventListener('load', function() {
                         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoverunhappy.png)';
                     }
 
-                    document.querySelector('.game').style.display = document.querySelector('.hud').style.display = document.querySelector('.info').style.display = document.querySelector('.instructions').style.display = 'none';
+                    document.querySelector('.game').style.display = document.querySelector('.hud').style.display = document.querySelector('.info').style.display = document.querySelector('.instructions').style.display = document.querySelector('.sound').style.display = document.querySelector('.back').style.display = 'none';
                     document.querySelector('.gameover').classList.remove('hidden');
                     setTimeout(function() {
                         sock.disconnect();
@@ -394,6 +394,8 @@ window.addEventListener('load', function() {
                                 me.score = 100;
                                 changeScore(200, me.scoreDynamic);
                                 happymax(timer);
+                                updateScore();
+                                return;
                             } else {
                                 me.score = 99;
                             }
