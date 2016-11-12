@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-12T02:25:09+01:00
+* @Last modified time: 2016-11-12T13:02:15+01:00
 */
 
 window.addEventListener('load', function() {
@@ -40,7 +40,8 @@ window.addEventListener('load', function() {
             world: document.querySelector('.worldgauge .gauge')
         },
         instructions = document.querySelector('div.instructions'),
-        me, room, map;
+        me, room, map,
+        happymaxb = false;
 
     document.querySelector('.sound').setAttribute('src', musicOnOff ? '/static/assets/Sound.png' : '/static/assets/SoundOff.png');
 
@@ -258,8 +259,10 @@ window.addEventListener('load', function() {
                 instructions.appendChild(antagonist);
             }
             var startgame = function() {
-                instructions.style.display = 'none';
-                sock.emit('startplay');
+                if (room == null) {
+                    instructions.style.display = 'none';
+                    sock.emit('startplay');
+                }
             };
             document.body.addEventListener('click', startgame);
             document.body.addEventListener('touchend', startgame);
@@ -344,6 +347,7 @@ window.addEventListener('load', function() {
                 var timer;
 
                 sock.on('gameover', function(data) {
+                    if (data.happy) { happymax(null); happymaxb = true; return; }
                     document.querySelector('.gameover').classList.remove('gameover--happy');
                     if (data.world) {
                         document.querySelector('.gameover').style['background-image'] = 'url(/static/assets/gameoversociety.png)';
@@ -392,9 +396,8 @@ window.addEventListener('load', function() {
                             if (me.fullsince >= 5000) {
                                 me.state = room.states.HAPPY;
                                 me.score = 100;
-                                changeScore(200, me.scoreDynamic);
                                 happymax(timer);
-                                updateScore();
+                                updateScore(200);
                                 return;
                             } else {
                                 me.score = 99;
@@ -424,7 +427,7 @@ window.addEventListener('load', function() {
     }
 
     var isFirst = true;
-    function updateScore() {
+    function updateScore(loldatfixisugly) {
         var newScoreDynamic = computeScore[me.type.rules](utils.getAdjacentMembers());
         if (me.scoreDynamic !== newScoreDynamic) {
             me.fullsince = 0;
@@ -448,7 +451,7 @@ window.addEventListener('load', function() {
             }
         }
         gauge.me.style['width'] = String(me.score) + '%';
-        changeScore(me.score, me.scoreDynamic);
+        changeScore(loldatfixisugly || me.score, me.scoreDynamic);
         isFirst = false;
 
         var oldMusic = currentMusic;
@@ -514,6 +517,7 @@ window.addEventListener('load', function() {
     }
 
     function changeScore(newScore, newScoreDynamic) {
+        if (happymaxb) { return; }
         sock.emit('changescore', { score: newScore, direction: newScoreDynamic });
     }
 

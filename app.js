@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-12T01:58:40+01:00
+* @Last modified time: 2016-11-12T13:04:10+01:00
 */
 
 'use strict';
@@ -122,6 +122,7 @@ app.listen(3000, function() {
                         member.sock.emit('gameover', { world: false });
                     } else if (data.score >= 200) {
                         member.state = room.states.HAPPY;
+                        member.sock.emit('gameover', { world: false , happy: true });
                     }
                     room.updateScores(member.type.name);
                     room.members.emit('changedscore', { member: member.UUID, score: member.score });
