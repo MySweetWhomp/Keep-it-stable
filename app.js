@@ -3,7 +3,7 @@
 * @Date:   2016-04-15T23:45:19+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T23:25:08+01:00
+* @Last modified time: 2016-11-12T01:58:40+01:00
 */
 
 'use strict';
@@ -74,7 +74,7 @@ app.listen(3000, function() {
 
                 let mustRegisterMember = function() {
                     logger.debug(`Ask register for ${data.roomUUID}`);
-                    if ((room.size[0] * room.size[1]) - room.members.count() <= 3) {
+                    if ((room.size[0] * room.size[1]) - room.members.count() <= 4) {
                         room.grow();
                         logger.info(`${room.UUID} must grow!`);
                     }
