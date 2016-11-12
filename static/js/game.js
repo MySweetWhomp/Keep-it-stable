@@ -3,7 +3,7 @@
 * @Date:   2016-04-16T10:35:33+02:00
 * @Email:  hello@pauljoannon.com
 * @Last modified by:   paulloz
-* @Last modified time: 2016-11-11T23:42:17+01:00
+* @Last modified time: 2016-11-12T00:53:28+01:00
 */
 
 window.addEventListener('load', function() {
@@ -383,6 +383,7 @@ window.addEventListener('load', function() {
 
                 var step = 5;
                 function theScoreUpdate() {
+                    if (me.fullsince >= 5000) { return; }
                     var cat = parseInt(me.score / scale);
                     me.score = Math.min(100, Math.max(0, me.score + (step * me.scoreDynamic)));
                     if (me.score > 0 && me.state !== room.states.DEAD) {
@@ -424,6 +425,8 @@ window.addEventListener('load', function() {
     function updateScore() {
         var newScoreDynamic = computeScore[me.type.rules](utils.getAdjacentMembers());
         if (me.scoreDynamic !== newScoreDynamic) {
+            me.fullsince = 0;
+
             me.scoreDynamic = newScoreDynamic;
 
             me.feedback.classList.remove('p1', 'm1');
